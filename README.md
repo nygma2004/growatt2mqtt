@@ -59,4 +59,5 @@ G(GND)                                  GND
 ## Videos
 
 I have a few videos covering the development of this project:
+
 [![Prototype](https://img.youtube.com/vi/Mz1dJGthIJk/0.jpg)](https://www.youtube.com/watch?v=Mz1dJGthIJk)
