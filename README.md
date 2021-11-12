@@ -3,6 +3,12 @@ This sketch runs on an ESP8266 and reads data from Growatt Solar Inverter over R
 
 ![Setup](/img/setup.jpg)
 
+This sketch publishes the following information from the holding registers that store device configuration data. More on these please refer to the modbus PDF documentation. This is sent once at startup:
+SaftyFuncEn, Inverter Max output active power percent, Inverter max output reactive power percent, Normal work PV voltage, Firmware version, Control Firmware version, Serial number, Grid voltage low and high limit protect, Grid frequency low and high limit protect
+
+The sketch also publishes the live statistics every 4 seconds. These are stored in the input registers:
+Inverter run state, Input power, PV1 and PV2 voltage current and power, Output power, Grid frequency, Energy generated today and total and these for both PV1 and PV2, 3 temperatures, Inverter output PF now, Derating mode, Fault and warning codes.
+
 ## Install
 Download this repository and build and flash your ESP. As I said the code works for 1 phase 2 string inverters, if you have a 3 phase inverter, or more strings the code will still work, but you will not see all the data in the device. For BOM and PCB scroll down for the relevant sections below.
 You need an Arduino IDE with ESP8266 configuration added. You need a few additional libraries (see below). And before you build open the settings.h and set your credentials. I think they are self explanatory. Compile and upload.
@@ -25,7 +31,7 @@ The following libraries are used beside the "Standard" ESP8266 libraries:
 
 ## PCB
 
-![Board](/img/board.png)
+![Board](/img/board.jpg)
 
 I designed a custom PCB for this board (for a previous project), you can order if from here: https://www.pcbway.com/project/shareproject/ESP8266_Modbus_board.html
 
