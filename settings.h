@@ -28,3 +28,12 @@ const char* mqtt_user = "xxxx";             // MQTT userid
 const char* mqtt_password = "xxxx";         // MQTT password
 const char* clientID = "growatt";                // MQTT client ID
 const char* topicRoot = "growatt";             // MQTT root topic for the device, keep / at the end
+
+
+// Comment the entire second below for dynamic IP (including the define)
+// #define FIXEDIP   1
+IPAddress local_IP(192, 168, 1, 205);         // Set your Static IP address
+IPAddress gateway(192, 168, 1, 254);          // Set your Gateway IP address
+IPAddress subnet(255, 255, 255, 0);
+IPAddress primaryDNS(192, 168, 1, 254);   //optional
+IPAddress secondaryDNS(8, 8, 4, 4); //optional

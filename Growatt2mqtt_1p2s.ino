@@ -355,12 +355,13 @@ void ReadHoldingRegisters() {
       #endif
       
     }
-    sprintf(json,"%s \"end\":1 }",json);
+    
 
     #ifdef DEBUG_SERIAL
       Serial.println();
     #endif
     #ifdef DEBUG_MQTT
+      sprintf(json,"%s \"end\":1 }",json);
       sprintf(topic,"%s/holding",topicRoot);
       mqtt.publish(topic, json);
     #endif
@@ -569,6 +570,14 @@ void setup() {
   // Connect to Wifi
   Serial.print(F("Connecting to Wifi"));
   WiFi.mode(WIFI_STA);
+
+  #ifdef FIXEDIP
+  // Configures static IP address
+  if (!WiFi.config(local_IP, gateway, subnet, primaryDNS, secondaryDNS)) {
+    Serial.println("STA Failed to configure");
+  }
+  #endif
+  
   WiFi.begin(ssid, password);
   while (WiFi.status() != WL_CONNECTED) {
     delay(500);
@@ -625,10 +634,12 @@ void setup() {
   // ArduinoOTA.setPassword((const char *)"123");
 
   ArduinoOTA.onStart([]() {
+    os_timer_disarm(&myTimer);
     Serial.println("Start");
   });
   ArduinoOTA.onEnd([]() {
     Serial.println("\nEnd");
+    os_timer_arm(&myTimer, 1000, true);
   });
   ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
     Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
