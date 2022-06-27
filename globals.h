@@ -1,4 +1,14 @@
-
+/*
+ * 
+ * Version History
+ * 1.2
+ * - OTA issue fixed
+ * - OTA password added
+ * 1.3
+ * - Derate is address 104 and was incorrectly coded as 103 in line 174
+ * 
+ * 
+ */
 
 char msg[50];
 String mqttStat = "";
@@ -8,7 +18,7 @@ int setcounter = 0;
 bool ledoff = false;
 bool holdingregisters = false;
 char newclientid[80];
-char buildversion[12]="v1.0.1p2s";
+char buildversion[12]="v1.3.1p2s";
 int overflow;
 
 struct modbus_input_registers 

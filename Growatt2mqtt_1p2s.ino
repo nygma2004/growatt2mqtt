@@ -171,7 +171,7 @@ void ReadInputRegisters() {
       modbusdata.ipf = growatt.getResponseBuffer(100-64);
       modbusdata.realoppercent = growatt.getResponseBuffer(101-64);
       modbusdata.opfullpower = ((growatt.getResponseBuffer(102-64) << 16) | growatt.getResponseBuffer(103-64))*0.1;
-      modbusdata.deratingmode = growatt.getResponseBuffer(103-64);
+      modbusdata.deratingmode = growatt.getResponseBuffer(104-64);
                                 //  0:no derate;
                                 //  1:PV;
                                 //  2:*;
@@ -631,7 +631,7 @@ void setup() {
   ArduinoOTA.setHostname(value);
 
   // No authentication by default
-  // ArduinoOTA.setPassword((const char *)"123");
+  ArduinoOTA.setPassword((const char *)"esp6161");
 
   ArduinoOTA.onStart([]() {
     os_timer_disarm(&myTimer);
