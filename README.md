@@ -64,4 +64,9 @@ I have a few videos covering the development of this project:
 
 [![Code almost complete](https://img.youtube.com/vi/krCdt2nv3BM/0.jpg)](https://www.youtube.com/watch?v=krCdt2nv3BM)
 
+And my final review of this project
+[![Final solution](https://img.youtube.com/vi/Mz1dJGthIJk/0.jpg)](https://www.youtube.com/watch?v=Mz1dJGthIJk)
 
+Saving data to Influx DB and generating the dashboard in Grafana
+[![Reporting dashbpard](https://img.youtube.com/vi/SZr8mhj-O7w/0.jpg)](https://www.youtube.com/watch?v=SZr8mhj-O7w)
+[![Final solution](https://img.youtube.com/vi/Mz1dJGthIJk/0.jpg)](https://www.youtube.com/watch?v=Mz1dJGthIJk)
