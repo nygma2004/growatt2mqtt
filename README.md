@@ -80,3 +80,11 @@ I added all my integration work in the integration folder and it is also explain
 - Send Telegram alert when the inverter is offline
 - Show generation of inverter data in Grafana dashboard
 - Calculate electricity balance: how much extra I generate from solar
+
+## Version History
+
+v1.2
+- OTA issue fixed
+- OTA password added
+v1.3
+- Derate is address 104 and was incorrectly coded as 103 in line 174
