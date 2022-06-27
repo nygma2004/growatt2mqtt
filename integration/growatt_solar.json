@@ -1,0 +1,2314 @@
+[
+    {
+        "id": "54ac1636219b4914",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram alert",
+        "func": "if (msg.topic===\"clear\") {\n    node.status({});\n    return null;\n}\n\nmsg.payload = { service: \"21\", type: \"message\", content: msg.payload.fulltext};\nnode.status({fill:\"red\",shape:\"ring\",text:msg.payload.content});\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 1420,
+        "wires": [
+            [
+                "dc3be8aca65778af"
+            ]
+        ]
+    },
+    {
+        "id": "dc3be8aca65778af",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "86deb2f58b76aa52"
+        ],
+        "x": 1135,
+        "y": 1420,
+        "wires": []
+    },
+    {
+        "id": "d07a7bb6afea7196",
+        "type": "comment",
+        "z": "52b8ac534c9b15f7",
+        "name": "Growatt2MQTT (3kW Garage inverter)",
+        "info": "",
+        "x": 190,
+        "y": 1300,
+        "wires": []
+    },
+    {
+        "id": "682cbf384e48183b",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Add text",
+        "func": "msg.payload.status_text = \"\";\nswitch (msg.payload.status) {\n    case 0:\n        msg.payload.status_text = \"Waiting\";\n        break;\n    case 1:\n        msg.payload.status_text = \"Normal\";\n        break;\n    case 3:\n        msg.payload.status_text = \"Fault\";\n        break;\n}\n\nmsg.payload.deratingmode_text = \"\";\nswitch (msg.payload.deratingmode) {\n    case 0: msg.payload.deratingmode_text = \"No derate\"; break;\n    case 1: msg.payload.deratingmode_text = \"PV\"; break;\n    case 2: msg.payload.deratingmode_text = \"*\"; break;\n    case 3: msg.payload.deratingmode_text = \"Vac\"; break;\n    case 4: msg.payload.deratingmode_text = \"Fac\"; break;\n    case 5: msg.payload.deratingmode_text = \"Tboost\"; break;\n    case 6: msg.payload.deratingmode_text = \"Tinv\"; break;\n    case 7: msg.payload.deratingmode_text = \"Control\"; break;\n    case 8: msg.payload.deratingmode_text = \"*\"; break;\n    case 9: msg.payload.deratingmode_text = \"*OverBac\"; break;\n}\n\nmsg.payload.faultcode_text = \"\";\nswitch (msg.payload.faultcode) {\n    case 0: msg.payload.faultcode_text = \"No fault\"; break;\n    case 1: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 2: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 3: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 4: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 5: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 6: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 7: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 8: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 9: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 10: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 11: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 12: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 13: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 14: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 15: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 16: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 17: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 18: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 19: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 20: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 21: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 22: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 23: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 24: msg.payload.faultcode_text = \"Auto Test\"; break;\n    case 25: msg.payload.faultcode_text = \"No AC\"; break;\n    case 26: msg.payload.faultcode_text = \"PV Isolation Low\"; break;\n    case 27: msg.payload.faultcode_text = \"Residual I\"; break;\n    case 28: msg.payload.faultcode_text = \"Output High\"; break;\n    case 29: msg.payload.faultcode_text = \"PV Voltage\"; break;\n    case 30: msg.payload.faultcode_text = \"AC V Outrange\"; break;\n    case 31: msg.payload.faultcode_text = \"AC F Outrange\"; break;\n    case 32: msg.payload.faultcode_text = \"Module Hot\"; break;\n}\n\nlet faultbitcode = \"\";\nmsg.payload.faultbitcode_text = \"\";\n\nif (msg.payload.faultbitcode & 0x00000002) faultbitcode = faultbitcode + \"Communication error, \";\nif (msg.payload.faultbitcode & 0x00000008) faultbitcode = faultbitcode + \"StrReverse or StrShort fault, \";\nif (msg.payload.faultbitcode & 0x00000010) faultbitcode = faultbitcode + \"Model Init fault, \";\nif (msg.payload.faultbitcode & 0x00000020) faultbitcode = faultbitcode + \"Grid Volt Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000040) faultbitcode = faultbitcode + \"ISO Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000080) faultbitcode = faultbitcode + \"GFCI Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00001000) faultbitcode = faultbitcode + \"AFCI Fault, \";\nif (msg.payload.faultbitcode & 0x00004000) faultbitcode = faultbitcode + \"AFCI Module fault, \";\nif (msg.payload.faultbitcode & 0x00020000) faultbitcode = faultbitcode + \"Relay check fault, \";\nif (msg.payload.faultbitcode & 0x00200000) faultbitcode = faultbitcode + \"Communication error, \";\nif (msg.payload.faultbitcode & 0x00400000) faultbitcode = faultbitcode + \"Bus Voltage error, \";\nif (msg.payload.faultbitcode & 0x00800000) faultbitcode = faultbitcode + \"AutoTest fail, \";\nif (msg.payload.faultbitcode & 0x01000000) faultbitcode = faultbitcode + \"No Utility, \";\nif (msg.payload.faultbitcode & 0x02000000) faultbitcode = faultbitcode + \"PV Isolation Low, \";\nif (msg.payload.faultbitcode & 0x04000000) faultbitcode = faultbitcode + \"Residual I High, \";\nif (msg.payload.faultbitcode & 0x08000000) faultbitcode = faultbitcode + \"Output High DCI, \";\nif (msg.payload.faultbitcode & 0x10000000) faultbitcode = faultbitcode + \"PV Voltage high, \";\nif (msg.payload.faultbitcode & 0x20000000) faultbitcode = faultbitcode + \"AC V Outrange, \";\nif (msg.payload.faultbitcode & 0x40000000) faultbitcode = faultbitcode + \"AC F Outrange, \";\nif (msg.payload.faultbitcode & 0x80000000) faultbitcode = faultbitcode + \"TempratureHigh, \";\n\n\nif (faultbitcode !== \"\") {\n    msg.payload.faultbitcode_text = faultbitcode.substring(0, faultbitcode.length - 2);\n}\n\nlet warningbitcode = \"\";\nmsg.payload.warningbitcode_text = \"\";\n\nif (msg.payload.warningbitcode & 0x0001) warningbitcode = warningbitcode + \"Fan warning, \";\nif (msg.payload.warningbitcode & 0x0002) warningbitcode = warningbitcode + \"String communication abnormal, \";\nif (msg.payload.warningbitcode & 0x0004) warningbitcode = warningbitcode + \"StrPIDconfig Warning, \";\nif (msg.payload.warningbitcode & 0x0010) warningbitcode = warningbitcode + \"DSP and COM firmware unmatch, \";\nif (msg.payload.warningbitcode & 0x0040) warningbitcode = warningbitcode + \"SPD abnormal, \";\nif (msg.payload.warningbitcode & 0x0080) warningbitcode = warningbitcode + \"GND and N connect abnormal, \";\nif (msg.payload.warningbitcode & 0x0100) warningbitcode = warningbitcode + \"PV1 or PV2 circuit short, \";\nif (msg.payload.warningbitcode & 0x0200) warningbitcode = warningbitcode + \"PV1 or PV2 boost driver broken, \";\n\n\nif (warningbitcode !== \"\") {\n    msg.payload.warningbitcode_text = warningbitcode.substring(0, warningbitcode.length - 2);\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 1420,
+        "wires": [
+            [
+                "9a0eaf631143ad80"
+            ]
+        ]
+    },
+    {
+        "id": "9a0eaf631143ad80",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram message",
+        "func": "let fulltext = \"☀️ Garage inverter status: \" + msg.payload.status_text + \",\\nDerating: \" + msg.payload.deratingmode_text + \",\\nFault code: \" + msg.payload.faultcode_text + \"\\n\" + msg.payload.faultbitcode_text + \"\\nWarning: \" + msg.payload.warningbitcode_text;\nlet shorttext = \"☀️ Garage inverter Derating: \"+msg.payload.deratingmode_text+\",\\nFault code: \"+msg.payload.faultcode_text+\"\\n\"+msg.payload.faultbitcode_text+\"\\nWarning: \"+msg.payload.warningbitcode_text;\nmsg.payload.fulltext = fulltext;\nmsg.payload.shorttext = shorttext;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 1420,
+        "wires": [
+            [
+                "044a36dbc3795059"
+            ]
+        ]
+    },
+    {
+        "id": "044a36dbc3795059",
+        "type": "rbe",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload.shorttext",
+        "topi": "topic",
+        "x": 780,
+        "y": 1420,
+        "wires": [
+            [
+                "54ac1636219b4914",
+                "a5f341294a3a1720"
+            ]
+        ]
+    },
+    {
+        "id": "4c6340f22b8fe802",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "Clear",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "clear",
+        "payload": "",
+        "payloadType": "date",
+        "x": 790,
+        "y": 1460,
+        "wires": [
+            [
+                "54ac1636219b4914"
+            ]
+        ]
+    },
+    {
+        "id": "8deb480a65b00a0d",
+        "type": "mqtt in",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "topic": "growatt/garage/status",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "cea5258a.b34038",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 160,
+        "y": 1720,
+        "wires": [
+            [
+                "8be8431d6ad1ee62"
+            ]
+        ]
+    },
+    {
+        "id": "ae6d1a6ad9436f2e",
+        "type": "mqtt in",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "topic": "growatt/garage/data",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "cea5258a.b34038",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 150,
+        "y": 1540,
+        "wires": [
+            [
+                "13d034be13f51c3d",
+                "682cbf384e48183b",
+                "5c52f1cbdd21c281",
+                "5ef5a977234c0aba"
+            ]
+        ]
+    },
+    {
+        "id": "ad7c567966f3a218",
+        "type": "delay",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 610,
+        "y": 1540,
+        "wires": [
+            [
+                "51b1752ba69d96cc"
+            ]
+        ]
+    },
+    {
+        "id": "7719b731e474b0f9",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Convert Growatt to Influx",
+        "func": "let measurement = \"solar\"\nlet inverter = \"garage\";\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Power: \" + msg.payload.outputpower + \" W, Etoday: \" + msg.payload.energytoday+\" kWh\"});\nlet record = {\n    \"measurement\": measurement,\n    \"tags\": {\n        \"inverter\": inverter\n    },\n    \"fields\": {\n        \"status\": msg.payload.status,\n        \"solarpower\": msg.payload.solarpower,\n        \"pv1voltage\": msg.payload.pv1voltage,\n        \"pv1current\": msg.payload.pv1current,\n        \"pv1power\": msg.payload.pv1power,\n        \"pv2voltage\": msg.payload.pv2voltage,\n        \"pv2current\": msg.payload.pv2current,\n        \"pv2power\": msg.payload.pv2power,\n        \"outputpower\": msg.payload.outputpower,\n        \"gridfrequency\": msg.payload.gridfrequency,\n        \"gridvoltage\": msg.payload.gridvoltage,\n        \"energytoday\": msg.payload.energytoday,\n        \"energytotal\": msg.payload.energytotal,\n        \"totalworktime\": msg.payload.totalworktime,\n        \"pv1energytoday\": msg.payload.pv1energytoday,\n        \"pv1energytotal\": msg.payload.pv1energytotal,\n        \"pv2energytoday\": msg.payload.pv2energytoday,\n        \"pv2energytotal\": msg.payload.pv2energytotal,\n        \"opfullpower\": msg.payload.opfullpower,\n        \"tempinverter\": msg.payload.tempinverter,\n        \"tempipm\": msg.payload.tempipm,\n        \"tempboost\": msg.payload.tempboost,\n        \"ipf\": msg.payload.ipf,\n        \"realoppercent\": msg.payload.realoppercent,\n        \"deratingmode\": msg.payload.deratingmode,\n        \"faultcode\": msg.payload.faultcode,\n        \"faultbitcode\": msg.payload.faultbitcode,\n        \"warningbitcode\": msg.payload.warningbitcode,\n        \"status_text\": msg.payload.status_text,\n        \"deratingmode_text\": msg.payload.deratingmode_text,\n        \"faultcode_text\": msg.payload.faultcode_text,\n        \"faultbitcode_text\": msg.payload.faultbitcode_text,\n        \"warningbitcode_text\": msg.payload.warningbitcode_text\n     }\n};\n\nlet data = [];\n\ndata.push(record);\n\nmsg.payload = data;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 1540,
+        "wires": [
+            [
+                "6509e911942803a6",
+                "4f8bdda61a3a6ec8"
+            ]
+        ]
+    },
+    {
+        "id": "4f8bdda61a3a6ec8",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "0d3a8155db4e5123",
+            "783d71afcd0cb582"
+        ],
+        "x": 1225,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "51b1752ba69d96cc",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Add text",
+        "func": "msg.payload.status_text=\"\";\nswitch (msg.payload.status) {\n    case 0:\n        msg.payload.status_text=\"Waiting\";\n        break;\n    case 1:\n        msg.payload.status_text=\"Normal\";\n        break;\n    case 3:\n        msg.payload.status_text=\"Fault\";\n        break;\n}\n\nmsg.payload.deratingmode_text = \"\";\nswitch (msg.payload.deratingmode) {\n    case 0: msg.payload.deratingmode_text=\"No derate\"; break;\n    case 1: msg.payload.deratingmode_text=\"PV\"; break;\n    case 2: msg.payload.deratingmode_text=\"*\"; break;\n    case 3: msg.payload.deratingmode_text=\"Vac\"; break;\n    case 4: msg.payload.deratingmode_text=\"Fac\"; break;\n    case 5: msg.payload.deratingmode_text=\"Tboost\"; break;\n    case 6: msg.payload.deratingmode_text=\"Tinv\"; break;\n    case 7: msg.payload.deratingmode_text=\"Control\"; break;\n    case 8: msg.payload.deratingmode_text=\"*\"; break;\n    case 9: msg.payload.deratingmode_text=\"*OverBac\"; break;\n}\n\nmsg.payload.faultcode_text=\"\";\nswitch (msg.payload.faultcode) {\n    case 0 : msg.payload.faultcode_text=\"No fault\"; break;\n    case 1 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 2 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 3 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 4 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 5 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 6 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 7 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 8 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 9 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 10: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 11: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 12: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 13: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 14: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 15: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 16: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 17: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 18: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 19: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 20: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 21: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 22: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 23: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 24: msg.payload.faultcode_text=\"Auto Test\"; break;\n    case 25: msg.payload.faultcode_text=\"No AC\"; break;\n    case 26: msg.payload.faultcode_text=\"PV Isolation Low\"; break;\n    case 27: msg.payload.faultcode_text=\"Residual I\"; break;\n    case 28: msg.payload.faultcode_text=\"Output High\"; break;\n    case 29: msg.payload.faultcode_text=\"PV Voltage\"; break;\n    case 30: msg.payload.faultcode_text=\"AC V Outrange\"; break;\n    case 31: msg.payload.faultcode_text=\"AC F Outrange\"; break;\n    case 32: msg.payload.faultcode_text=\"Module Hot\"; break;\n}\n\nlet faultbitcode = \"\";\nmsg.payload.faultbitcode_text = \"\";    \n\nif (msg.payload.faultbitcode & 0x00000002) faultbitcode=faultbitcode+\"Communication error, \";\nif (msg.payload.faultbitcode & 0x00000008) faultbitcode=faultbitcode+\"StrReverse or StrShort fault, \";\nif (msg.payload.faultbitcode & 0x00000010) faultbitcode=faultbitcode+\"Model Init fault, \";\nif (msg.payload.faultbitcode & 0x00000020) faultbitcode=faultbitcode+\"Grid Volt Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000040) faultbitcode=faultbitcode+\"ISO Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000080) faultbitcode=faultbitcode+\"GFCI Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00001000) faultbitcode=faultbitcode+\"AFCI Fault, \";\nif (msg.payload.faultbitcode & 0x00004000) faultbitcode=faultbitcode+\"AFCI Module fault, \";\nif (msg.payload.faultbitcode & 0x00020000) faultbitcode=faultbitcode+\"Relay check fault, \";\nif (msg.payload.faultbitcode & 0x00200000) faultbitcode=faultbitcode+\"Communication error, \";\nif (msg.payload.faultbitcode & 0x00400000) faultbitcode=faultbitcode+\"Bus Voltage error, \";\nif (msg.payload.faultbitcode & 0x00800000) faultbitcode=faultbitcode+\"AutoTest fail, \";\nif (msg.payload.faultbitcode & 0x01000000) faultbitcode=faultbitcode+\"No Utility, \";\nif (msg.payload.faultbitcode & 0x02000000) faultbitcode=faultbitcode+\"PV Isolation Low, \";\nif (msg.payload.faultbitcode & 0x04000000) faultbitcode=faultbitcode+\"Residual I High, \";\nif (msg.payload.faultbitcode & 0x08000000) faultbitcode=faultbitcode+\"Output High DCI, \";\nif (msg.payload.faultbitcode & 0x10000000) faultbitcode=faultbitcode+\"PV Voltage high, \";\nif (msg.payload.faultbitcode & 0x20000000) faultbitcode=faultbitcode+\"AC V Outrange, \";\nif (msg.payload.faultbitcode & 0x40000000) faultbitcode=faultbitcode+\"AC F Outrange, \";\nif (msg.payload.faultbitcode & 0x80000000) faultbitcode=faultbitcode+\"TempratureHigh, \";\n\n\nif (faultbitcode!==\"\") {\n    msg.payload.faultbitcode_text = faultbitcode.substring(0, faultbitcode.length - 2);\n}\n\nlet warningbitcode = \"\";\nmsg.payload.warningbitcode_text = \"\";    \n\nif (msg.payload.warningbitcode & 0x0001) warningbitcode=warningbitcode+\"Fan warning, \";\nif (msg.payload.warningbitcode & 0x0002) warningbitcode=warningbitcode+\"String communication abnormal, \";\nif (msg.payload.warningbitcode & 0x0004) warningbitcode=warningbitcode+\"StrPIDconfig Warning, \";\nif (msg.payload.warningbitcode & 0x0010) warningbitcode=warningbitcode+\"DSP and COM firmware unmatch, \";\nif (msg.payload.warningbitcode & 0x0040) warningbitcode=warningbitcode+\"SPD abnormal, \";\nif (msg.payload.warningbitcode & 0x0080) warningbitcode=warningbitcode+\"GND and N connect abnormal, \";\nif (msg.payload.warningbitcode & 0x0100) warningbitcode=warningbitcode+\"PV1 or PV2 circuit short, \";\nif (msg.payload.warningbitcode & 0x0200) warningbitcode=warningbitcode+\"PV1 or PV2 boost driver broken, \";\n\n\nif (warningbitcode!==\"\") {\n    msg.payload.warningbitcode_text = warningbitcode.substring(0, warningbitcode.length - 2);\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 1540,
+        "wires": [
+            [
+                "7719b731e474b0f9"
+            ]
+        ]
+    },
+    {
+        "id": "6509e911942803a6",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1290,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "1b7c654c170a7722",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "PVOutput.org update",
+        "func": "// Update the status with current timestamp\nvar now = new Date();\nvar yyyy = now.getFullYear();\nvar mm = now.getMonth() < 9 ? \"0\" + (now.getMonth() + 1) : (now.getMonth() + 1); // getMonth() is zero-based\nvar dd = now.getDate() < 10 ? \"0\" + now.getDate() : now.getDate();\nvar hh = now.getHours() < 10 ? \"0\" + now.getHours() : now.getHours();\nvar mmm = now.getMinutes() < 10 ? \"0\" + now.getMinutes() : now.getMinutes();\nvar ss = now.getSeconds() < 10 ? \"0\" + now.getSeconds() : now.getSeconds();\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Power: \" + msg.payload.outputpower + \" W, Etoday: \" + msg.payload.energytoday + \" kWh\" });\n\nmsg.url = \"https://pvoutput.org/service/r2/addstatus.jsp?\" + \n    \"key=YOUR_PVOUTPUT_API_KEY&sid=YOUR_PVOUTPUT_SID\" +\n    \"&d=\" + yyyy.toString() + mm.toString() + dd.toString()+\n    \"&t=\" + hh.toString() + \":\" + mmm.toString()+\n    \"&v1=\" + msg.payload.energytoday * 1000+\n    \"&v2=\" + msg.payload.outputpower+\n    \"&v5=\" + global.get(\"currenttemp\")+\n    \"&v6=\" + msg.payload.pv2voltage+\n    \"&c1=0\"+\n    \"&m1=\"+ global.get(\"weathercondition\").replace(\" \",\"%20\");\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 1600,
+        "wires": [
+            [
+                "714540e2edffa22f"
+            ]
+        ]
+    },
+    {
+        "id": "714540e2edffa22f",
+        "type": "http request",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1070,
+        "y": 1600,
+        "wires": [
+            [
+                "8f911e0381e55424"
+            ]
+        ]
+    },
+    {
+        "id": "8f911e0381e55424",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1250,
+        "y": 1600,
+        "wires": []
+    },
+    {
+        "id": "2e4b9784713a1b76",
+        "type": "delay",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "5",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 620,
+        "y": 1600,
+        "wires": [
+            [
+                "1b7c654c170a7722"
+            ]
+        ]
+    },
+    {
+        "id": "a5f341294a3a1720",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Diagnostic input message structure",
+        "func": "\nmsg.payload = msg.payload.fulltext.replace(/(?:\\r\\n|\\r|\\n)/g,\" | \");\nmsg.system = 44; // System id, use 1 for Dummy\nmsg.severity = 0; // 0: information, 1: warning, 2: error\nmsg.email = false; // if separate email should be sent\nmsg.emailtext = \"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 1360,
+        "wires": [
+            [
+                "d20d8cfe0eda1a0b"
+            ]
+        ]
+    },
+    {
+        "id": "d20d8cfe0eda1a0b",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "links": [
+            "13e089a7.73cb46"
+        ],
+        "x": 1235,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "8be8431d6ad1ee62",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Uptime and state management",
+        "func": "// check if the global flag for solar being down is set to true\nmsg.system = 44;\nlet currentuptime = msg.payload.uptime;\n\nmsg.state = context.get(\"state\") | 0;\nlet lastuptime = context.get(\"uptime\") | 0;\nlet lastupdate = context.get(\"lastupdate\");\nif (lastupdate===undefined) lastupdate = 0;\nlet now = new Date();\n\nlet system_text = \"Unknown\";\nlet system = global.get(\"Diag_System_Buffer\");\nsystem.forEach(function (element) {\n    if (element.sys_id === msg.system) {\n        system_text = element.sys_name;\n    }\n});\n\nif (msg.topic===\"update\") {\n\n    let current = now.getTime() - lastupdate;\n    current = Math.floor(current / 1000);\n\n    var minute = Math.floor(current / 60);\n    var hour = Math.floor(minute / 60);\n    var day = Math.floor(hour / 24);\n    if (current > 24 * 60 * 60) {\n        msg.payload = \"Last update \" + day + \" days, \" + hour % 24 + \" hours, \" + minute % 60 + \" minutes, \" + current % 60 + \" seconds ago\";\n    } else if (current > 60 * 60) {\n        msg.payload = \"Last update \" + hour % 24 + \" hours, \" + minute % 60 + \" minutes, \" + current % 60 + \" seconds ago\";\n    } else if (current > 60) {\n        msg.payload = \"Last update \" + minute % 60 + \" minutes, \" + current % 60 + \" seconds ago\";\n    } else {\n        msg.payload = \"Last update \" + current % 60 + \" seconds ago\";\n    }\n    node.status({fill:\"blue\",shape:\"ring\",text:msg.payload});\n\n    if ((current > 300) && (msg.state !== 99)) {\n        msg.payload = system_text+\" has gone offline\";\n        msg.state = 99;\n        context.set(\"state\", msg.state);\n        msg.severity = 2; // 0: information, 1: warning, 2: error\n        return msg;\n    }\n\n} else {\n\n    context.set(\"lastupdate\",now.getTime());\n    context.set(\"uptime\", currentuptime);\n    if (currentuptime < lastuptime) {\n        msg.payload = system_text+\" restarted: \" + lastuptime + \" -> \" + currentuptime;\n        msg.severity = 1; // 0: information, 1: warning, 2: error\n        return msg;\n    }\n\n    if (msg.state!==1) {\n        msg.state = 1;\n        context.set(\"state\",msg.state);\n        msg.payload = system_text+\" is now online\";\n        msg.severity = 0; // 0: information, 1: warning, 2: error\n        return msg;\n    }\n\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 1720,
+        "wires": [
+            [
+                "4197ce7f85848bd5",
+                "a3c93139902cac54"
+            ]
+        ]
+    },
+    {
+        "id": "a3c93139902cac54",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "links": [
+            "13e089a7.73cb46"
+        ],
+        "x": 1055,
+        "y": 1720,
+        "wires": []
+    },
+    {
+        "id": "6886d4158a7988b6",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "Update",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "update",
+        "payloadType": "date",
+        "x": 460,
+        "y": 1680,
+        "wires": [
+            [
+                "8be8431d6ad1ee62"
+            ]
+        ]
+    },
+    {
+        "id": "4197ce7f85848bd5",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 1680,
+        "wires": []
+    },
+    {
+        "id": "13d034be13f51c3d",
+        "type": "switch",
+        "z": "52b8ac534c9b15f7",
+        "name": "Outputpower > 0",
+        "property": "payload.outputpower",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 390,
+        "y": 1540,
+        "wires": [
+            [
+                "2e4b9784713a1b76",
+                "ad7c567966f3a218"
+            ]
+        ]
+    },
+    {
+        "id": "2a55e3d73c15b6ad",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Add text (old)",
+        "func": "msg.payload.status_text = \"\";\nswitch (msg.payload.status) {\n    case 0:\n        msg.payload.status_text = \"Waiting\";\n        break;\n    case 1:\n        msg.payload.status_text = \"Normal\";\n        break;\n    case 3:\n        msg.payload.status_text = \"Fault\";\n        break;\n}\n\n/*\nmsg.payload.deratingmode_text = \"\";\nswitch (msg.payload.deratingmode) {\n    case 0: msg.payload.deratingmode_text = \"No derate\"; break;\n    case 1: msg.payload.deratingmode_text = \"PV\"; break;\n    case 2: msg.payload.deratingmode_text = \"*\"; break;\n    case 3: msg.payload.deratingmode_text = \"Vac\"; break;\n    case 4: msg.payload.deratingmode_text = \"Fac\"; break;\n    case 5: msg.payload.deratingmode_text = \"Tboost\"; break;\n    case 6: msg.payload.deratingmode_text = \"Tinv\"; break;\n    case 7: msg.payload.deratingmode_text = \"Control\"; break;\n    case 8: msg.payload.deratingmode_text = \"*\"; break;\n    case 9: msg.payload.deratingmode_text = \"*OverBac\"; break;\n}\n*/\n\nmsg.payload.faultcode_text = \"\";\nswitch (msg.payload.faultcode) {\n    case 0: msg.payload.faultcode_text = \"No fault\"; break;\n    case 1: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 2: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 3: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 4: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 5: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 6: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 7: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 8: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 9: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 10: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 11: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 12: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 13: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 14: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 15: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 16: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 17: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 18: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 19: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 20: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 21: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 22: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 23: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 24: msg.payload.faultcode_text = \"Auto Test Failed\"; break;\n    case 25: msg.payload.faultcode_text = \"No AC Connection\"; break;\n    case 26: msg.payload.faultcode_text = \"PV Isolation Low\"; break;\n    case 27: msg.payload.faultcode_text = \"Residual I High\"; break;\n    case 28: msg.payload.faultcode_text = \"Output High DCI\"; break;\n    case 29: msg.payload.faultcode_text = \"PV Voltage High\"; break;\n    case 30: msg.payload.faultcode_text = \"AC V Outrange\"; break;\n    case 31: msg.payload.faultcode_text = \"AC F Outrange\"; break;\n    case 32: msg.payload.faultcode_text = \"Module Hot\"; break;\n}\n\n/*\nlet faultbitcode = \"\";\nmsg.payload.faultbitcode_text = \"\";\n\nif (msg.payload.faultbitcode & 0x00000002) faultbitcode = faultbitcode + \"Communication error, \";\nif (msg.payload.faultbitcode & 0x00000008) faultbitcode = faultbitcode + \"StrReverse or StrShort fault, \";\nif (msg.payload.faultbitcode & 0x00000010) faultbitcode = faultbitcode + \"Model Init fault, \";\nif (msg.payload.faultbitcode & 0x00000020) faultbitcode = faultbitcode + \"Grid Volt Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000040) faultbitcode = faultbitcode + \"ISO Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000080) faultbitcode = faultbitcode + \"GFCI Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00001000) faultbitcode = faultbitcode + \"AFCI Fault, \";\nif (msg.payload.faultbitcode & 0x00004000) faultbitcode = faultbitcode + \"AFCI Module fault, \";\nif (msg.payload.faultbitcode & 0x00020000) faultbitcode = faultbitcode + \"Relay check fault, \";\nif (msg.payload.faultbitcode & 0x00200000) faultbitcode = faultbitcode + \"Communication error, \";\nif (msg.payload.faultbitcode & 0x00400000) faultbitcode = faultbitcode + \"Bus Voltage error, \";\nif (msg.payload.faultbitcode & 0x00800000) faultbitcode = faultbitcode + \"AutoTest fail, \";\nif (msg.payload.faultbitcode & 0x01000000) faultbitcode = faultbitcode + \"No Utility, \";\nif (msg.payload.faultbitcode & 0x02000000) faultbitcode = faultbitcode + \"PV Isolation Low, \";\nif (msg.payload.faultbitcode & 0x04000000) faultbitcode = faultbitcode + \"Residual I High, \";\nif (msg.payload.faultbitcode & 0x08000000) faultbitcode = faultbitcode + \"Output High DCI, \";\nif (msg.payload.faultbitcode & 0x10000000) faultbitcode = faultbitcode + \"PV Voltage high, \";\nif (msg.payload.faultbitcode & 0x20000000) faultbitcode = faultbitcode + \"AC V Outrange, \";\nif (msg.payload.faultbitcode & 0x40000000) faultbitcode = faultbitcode + \"AC F Outrange, \";\nif (msg.payload.faultbitcode & 0x80000000) faultbitcode = faultbitcode + \"TempratureHigh, \";\n\n\nif (faultbitcode !== \"\") {\n    msg.payload.faultbitcode_text = faultbitcode.substring(0, faultbitcode.length - 2);\n}\n*/\n\n// This was not documented for this model, only for later models. But may still work\nlet warningbitcode = \"\";\nmsg.payload.warningbitcode_text = \"\";\n\nif (msg.payload.warningbitcode & 0x0001) warningbitcode = warningbitcode + \"Fan warning, \";\nif (msg.payload.warningbitcode & 0x0002) warningbitcode = warningbitcode + \"String communication abnormal, \";\nif (msg.payload.warningbitcode & 0x0004) warningbitcode = warningbitcode + \"StrPIDconfig Warning, \";\nif (msg.payload.warningbitcode & 0x0010) warningbitcode = warningbitcode + \"DSP and COM firmware unmatch, \";\nif (msg.payload.warningbitcode & 0x0040) warningbitcode = warningbitcode + \"SPD abnormal, \";\nif (msg.payload.warningbitcode & 0x0080) warningbitcode = warningbitcode + \"GND and N connect abnormal, \";\nif (msg.payload.warningbitcode & 0x0100) warningbitcode = warningbitcode + \"PV1 or PV2 circuit short, \";\nif (msg.payload.warningbitcode & 0x0200) warningbitcode = warningbitcode + \"PV1 or PV2 boost driver broken, \";\n\n\nif (warningbitcode !== \"\") {\n    msg.payload.warningbitcode_text = warningbitcode.substring(0, warningbitcode.length - 2);\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 410,
+        "y": 2480,
+        "wires": [
+            [
+                "ae86a533e76b3337"
+            ]
+        ]
+    },
+    {
+        "id": "5c52f1cbdd21c281",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 1360,
+        "wires": []
+    },
+    {
+        "id": "a4fbe963b02f9684",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram alert",
+        "func": "if (msg.topic===\"clear\") {\n    node.status({});\n    return null;\n}\n\nmsg.payload = {service: \"21\", type:\"message\", content:msg.payload.fulltext};\nnode.status({fill:\"red\",shape:\"ring\",text:msg.payload.content});\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 1960,
+        "wires": [
+            [
+                "78de2043ff1f6d82"
+            ]
+        ]
+    },
+    {
+        "id": "78de2043ff1f6d82",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "86deb2f58b76aa52"
+        ],
+        "x": 1135,
+        "y": 1960,
+        "wires": []
+    },
+    {
+        "id": "e43c74111b563d91",
+        "type": "comment",
+        "z": "52b8ac534c9b15f7",
+        "name": "Growatt2MQTT (1.5kW Small inverter)",
+        "info": "",
+        "x": 190,
+        "y": 1840,
+        "wires": []
+    },
+    {
+        "id": "8fe0206b66f2521a",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Add text",
+        "func": "msg.payload.status_text = \"\";\nswitch (msg.payload.status) {\n    case 0:\n        msg.payload.status_text = \"Waiting\";\n        break;\n    case 1:\n        msg.payload.status_text = \"Normal\";\n        break;\n    case 3:\n        msg.payload.status_text = \"Fault\";\n        break;\n}\n\nmsg.payload.deratingmode_text = \"\";\nswitch (msg.payload.deratingmode) {\n    case 0: msg.payload.deratingmode_text = \"No derate\"; break;\n    case 1: msg.payload.deratingmode_text = \"PV\"; break;\n    case 2: msg.payload.deratingmode_text = \"*\"; break;\n    case 3: msg.payload.deratingmode_text = \"Vac\"; break;\n    case 4: msg.payload.deratingmode_text = \"Fac\"; break;\n    case 5: msg.payload.deratingmode_text = \"Tboost\"; break;\n    case 6: msg.payload.deratingmode_text = \"Tinv\"; break;\n    case 7: msg.payload.deratingmode_text = \"Control\"; break;\n    case 8: msg.payload.deratingmode_text = \"*\"; break;\n    case 9: msg.payload.deratingmode_text = \"*OverBac\"; break;\n}\n\nmsg.payload.faultcode_text = \"\";\nswitch (msg.payload.faultcode) {\n    case 0: msg.payload.faultcode_text = \"No fault\"; break;\n    case 1: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 2: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 3: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 4: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 5: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 6: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 7: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 8: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 9: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 10: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 11: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 12: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 13: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 14: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 15: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 16: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 17: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 18: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 19: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 20: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 21: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 22: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 23: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 24: msg.payload.faultcode_text = \"Auto Test\"; break;\n    case 25: msg.payload.faultcode_text = \"No AC\"; break;\n    case 26: msg.payload.faultcode_text = \"PV Isolation Low\"; break;\n    case 27: msg.payload.faultcode_text = \"Residual I\"; break;\n    case 28: msg.payload.faultcode_text = \"Output High\"; break;\n    case 29: msg.payload.faultcode_text = \"PV Voltage\"; break;\n    case 30: msg.payload.faultcode_text = \"AC V Outrange\"; break;\n    case 31: msg.payload.faultcode_text = \"AC F Outrange\"; break;\n    case 32: msg.payload.faultcode_text = \"Module Hot\"; break;\n}\n\nlet faultbitcode = \"\";\nmsg.payload.faultbitcode_text = \"\";\n\nif (msg.payload.faultbitcode & 0x00000002) faultbitcode = faultbitcode + \"Communication error, \";\nif (msg.payload.faultbitcode & 0x00000008) faultbitcode = faultbitcode + \"StrReverse or StrShort fault, \";\nif (msg.payload.faultbitcode & 0x00000010) faultbitcode = faultbitcode + \"Model Init fault, \";\nif (msg.payload.faultbitcode & 0x00000020) faultbitcode = faultbitcode + \"Grid Volt Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000040) faultbitcode = faultbitcode + \"ISO Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000080) faultbitcode = faultbitcode + \"GFCI Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00001000) faultbitcode = faultbitcode + \"AFCI Fault, \";\nif (msg.payload.faultbitcode & 0x00004000) faultbitcode = faultbitcode + \"AFCI Module fault, \";\nif (msg.payload.faultbitcode & 0x00020000) faultbitcode = faultbitcode + \"Relay check fault, \";\nif (msg.payload.faultbitcode & 0x00200000) faultbitcode = faultbitcode + \"Communication error, \";\nif (msg.payload.faultbitcode & 0x00400000) faultbitcode = faultbitcode + \"Bus Voltage error, \";\nif (msg.payload.faultbitcode & 0x00800000) faultbitcode = faultbitcode + \"AutoTest fail, \";\nif (msg.payload.faultbitcode & 0x01000000) faultbitcode = faultbitcode + \"No Utility, \";\nif (msg.payload.faultbitcode & 0x02000000) faultbitcode = faultbitcode + \"PV Isolation Low, \";\nif (msg.payload.faultbitcode & 0x04000000) faultbitcode = faultbitcode + \"Residual I High, \";\nif (msg.payload.faultbitcode & 0x08000000) faultbitcode = faultbitcode + \"Output High DCI, \";\nif (msg.payload.faultbitcode & 0x10000000) faultbitcode = faultbitcode + \"PV Voltage high, \";\nif (msg.payload.faultbitcode & 0x20000000) faultbitcode = faultbitcode + \"AC V Outrange, \";\nif (msg.payload.faultbitcode & 0x40000000) faultbitcode = faultbitcode + \"AC F Outrange, \";\nif (msg.payload.faultbitcode & 0x80000000) faultbitcode = faultbitcode + \"TempratureHigh, \";\n\n\nif (faultbitcode !== \"\") {\n    msg.payload.faultbitcode_text = faultbitcode.substring(0, faultbitcode.length - 2);\n}\n\nlet warningbitcode = \"\";\nmsg.payload.warningbitcode_text = \"\";\n\nif (msg.payload.warningbitcode & 0x0001) warningbitcode = warningbitcode + \"Fan warning, \";\nif (msg.payload.warningbitcode & 0x0002) warningbitcode = warningbitcode + \"String communication abnormal, \";\nif (msg.payload.warningbitcode & 0x0004) warningbitcode = warningbitcode + \"StrPIDconfig Warning, \";\nif (msg.payload.warningbitcode & 0x0010) warningbitcode = warningbitcode + \"DSP and COM firmware unmatch, \";\nif (msg.payload.warningbitcode & 0x0040) warningbitcode = warningbitcode + \"SPD abnormal, \";\nif (msg.payload.warningbitcode & 0x0080) warningbitcode = warningbitcode + \"GND and N connect abnormal, \";\nif (msg.payload.warningbitcode & 0x0100) warningbitcode = warningbitcode + \"PV1 or PV2 circuit short, \";\nif (msg.payload.warningbitcode & 0x0200) warningbitcode = warningbitcode + \"PV1 or PV2 boost driver broken, \";\n\n\nif (warningbitcode !== \"\") {\n    msg.payload.warningbitcode_text = warningbitcode.substring(0, warningbitcode.length - 2);\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 370,
+        "y": 1960,
+        "wires": [
+            [
+                "bff0d0a54818e719"
+            ]
+        ]
+    },
+    {
+        "id": "bff0d0a54818e719",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram message",
+        "func": "let fulltext = \"☀️ Small inverter status: \"+msg.payload.status_text+\",\\nDerating: \"+msg.payload.deratingmode_text+\",\\nFault code: \"+msg.payload.faultcode_text+\"\\n\"+msg.payload.faultbitcode_text+\"\\nWarning: \"+msg.payload.warningbitcode_text;\nlet shorttext = \"☀️ Small inverter Derating: \" + msg.payload.deratingmode_text + \",\\nFault code: \" + msg.payload.faultcode_text + \"\\n\" + msg.payload.faultbitcode_text + \"\\nWarning: \" + msg.payload.warningbitcode_text;\nmsg.payload.fulltext = fulltext;\nmsg.payload.shorttext = shorttext;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 580,
+        "y": 1960,
+        "wires": [
+            [
+                "ba2cea9c3ec14b42"
+            ]
+        ]
+    },
+    {
+        "id": "ba2cea9c3ec14b42",
+        "type": "rbe",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload.shorttext",
+        "topi": "topic",
+        "x": 780,
+        "y": 1960,
+        "wires": [
+            [
+                "a4fbe963b02f9684",
+                "4099e84ae56ebd4a"
+            ]
+        ]
+    },
+    {
+        "id": "5f3f69c243fd442f",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "Clear",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "clear",
+        "payload": "",
+        "payloadType": "date",
+        "x": 790,
+        "y": 2000,
+        "wires": [
+            [
+                "a4fbe963b02f9684"
+            ]
+        ]
+    },
+    {
+        "id": "c6b7145f5bedacd8",
+        "type": "mqtt in",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "topic": "growatt/small/status",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "cea5258a.b34038",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 150,
+        "y": 2260,
+        "wires": [
+            [
+                "2d75ecb446b5b831"
+            ]
+        ]
+    },
+    {
+        "id": "af8fe24cba1e30bb",
+        "type": "mqtt in",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "topic": "growatt/small/data",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "cea5258a.b34038",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 150,
+        "y": 2080,
+        "wires": [
+            [
+                "8ade4fb7762b8f46",
+                "8fe0206b66f2521a",
+                "90b83cd59c1deed6",
+                "eb00c38bb027aab4"
+            ]
+        ]
+    },
+    {
+        "id": "7c916704fddc1af2",
+        "type": "delay",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 610,
+        "y": 2080,
+        "wires": [
+            [
+                "0a1f16c59e544b2e"
+            ]
+        ]
+    },
+    {
+        "id": "7c1857127b5a4e4f",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Convert Growatt to Influx",
+        "func": "let measurement = \"solar\"\nlet inverter = \"small\";\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Power: \" + msg.payload.outputpower + \" W, Etoday: \" + msg.payload.energytoday+\" kWh\"});\nlet record = {\n    \"measurement\": measurement,\n    \"tags\": {\n        \"inverter\": inverter\n    },\n    \"fields\": {\n        \"status\": msg.payload.status,\n        \"solarpower\": msg.payload.solarpower,\n        \"pv1voltage\": msg.payload.pv1voltage,\n        \"pv1current\": msg.payload.pv1current,\n        \"pv1power\": msg.payload.pv1power,\n        \"pv2voltage\": msg.payload.pv2voltage,\n        \"pv2current\": msg.payload.pv2current,\n        \"pv2power\": msg.payload.pv2power,\n        \"outputpower\": msg.payload.outputpower,\n        \"gridfrequency\": msg.payload.gridfrequency,\n        \"gridvoltage\": msg.payload.gridvoltage,\n        \"energytoday\": msg.payload.energytoday,\n        \"energytotal\": msg.payload.energytotal,\n        \"totalworktime\": msg.payload.totalworktime,\n        \"pv1energytoday\": msg.payload.pv1energytoday,\n        \"pv1energytotal\": msg.payload.pv1energytotal,\n        \"pv2energytoday\": msg.payload.pv2energytoday,\n        \"pv2energytotal\": msg.payload.pv2energytotal,\n        \"opfullpower\": msg.payload.opfullpower,\n        \"tempinverter\": msg.payload.tempinverter,\n        \"tempipm\": msg.payload.tempipm,\n        \"tempboost\": msg.payload.tempboost,\n        \"ipf\": msg.payload.ipf,\n        \"realoppercent\": msg.payload.realoppercent,\n        \"deratingmode\": msg.payload.deratingmode,\n        \"faultcode\": msg.payload.faultcode,\n        \"faultbitcode\": msg.payload.faultbitcode,\n        \"warningbitcode\": msg.payload.warningbitcode,\n        \"status_text\": msg.payload.status_text,\n        \"deratingmode_text\": msg.payload.deratingmode_text,\n        \"faultcode_text\": msg.payload.faultcode_text,\n        \"faultbitcode_text\": msg.payload.faultbitcode_text,\n        \"warningbitcode_text\": msg.payload.warningbitcode_text\n     }\n};\n\nlet data = [];\n\ndata.push(record);\n\nmsg.payload = data;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 2080,
+        "wires": [
+            [
+                "3578a846411c1691",
+                "76280223867ab6a9"
+            ]
+        ]
+    },
+    {
+        "id": "76280223867ab6a9",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "0d3a8155db4e5123",
+            "783d71afcd0cb582"
+        ],
+        "x": 1225,
+        "y": 2080,
+        "wires": []
+    },
+    {
+        "id": "0a1f16c59e544b2e",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Add text",
+        "func": "msg.payload.status_text=\"\";\nswitch (msg.payload.status) {\n    case 0:\n        msg.payload.status_text=\"Waiting\";\n        break;\n    case 1:\n        msg.payload.status_text=\"Normal\";\n        break;\n    case 3:\n        msg.payload.status_text=\"Fault\";\n        break;\n}\n\nmsg.payload.deratingmode_text = \"\";\nswitch (msg.payload.deratingmode) {\n    case 0: msg.payload.deratingmode_text=\"No derate\"; break;\n    case 1: msg.payload.deratingmode_text=\"PV\"; break;\n    case 2: msg.payload.deratingmode_text=\"*\"; break;\n    case 3: msg.payload.deratingmode_text=\"Vac\"; break;\n    case 4: msg.payload.deratingmode_text=\"Fac\"; break;\n    case 5: msg.payload.deratingmode_text=\"Tboost\"; break;\n    case 6: msg.payload.deratingmode_text=\"Tinv\"; break;\n    case 7: msg.payload.deratingmode_text=\"Control\"; break;\n    case 8: msg.payload.deratingmode_text=\"*\"; break;\n    case 9: msg.payload.deratingmode_text=\"*OverBac\"; break;\n}\n\nmsg.payload.faultcode_text=\"\";\nswitch (msg.payload.faultcode) {\n    case 0 : msg.payload.faultcode_text=\"No fault\"; break;\n    case 1 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 2 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 3 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 4 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 5 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 6 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 7 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 8 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 9 : msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 10: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 11: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 12: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 13: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 14: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 15: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 16: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 17: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 18: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 19: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 20: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 21: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 22: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 23: msg.payload.faultcode_text=\"Error 99+x\"; break;\n    case 24: msg.payload.faultcode_text=\"Auto Test\"; break;\n    case 25: msg.payload.faultcode_text=\"No AC\"; break;\n    case 26: msg.payload.faultcode_text=\"PV Isolation Low\"; break;\n    case 27: msg.payload.faultcode_text=\"Residual I\"; break;\n    case 28: msg.payload.faultcode_text=\"Output High\"; break;\n    case 29: msg.payload.faultcode_text=\"PV Voltage\"; break;\n    case 30: msg.payload.faultcode_text=\"AC V Outrange\"; break;\n    case 31: msg.payload.faultcode_text=\"AC F Outrange\"; break;\n    case 32: msg.payload.faultcode_text=\"Module Hot\"; break;\n}\n\nlet faultbitcode = \"\";\nmsg.payload.faultbitcode_text = \"\";    \n\nif (msg.payload.faultbitcode & 0x00000002) faultbitcode=faultbitcode+\"Communication error, \";\nif (msg.payload.faultbitcode & 0x00000008) faultbitcode=faultbitcode+\"StrReverse or StrShort fault, \";\nif (msg.payload.faultbitcode & 0x00000010) faultbitcode=faultbitcode+\"Model Init fault, \";\nif (msg.payload.faultbitcode & 0x00000020) faultbitcode=faultbitcode+\"Grid Volt Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000040) faultbitcode=faultbitcode+\"ISO Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000080) faultbitcode=faultbitcode+\"GFCI Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00001000) faultbitcode=faultbitcode+\"AFCI Fault, \";\nif (msg.payload.faultbitcode & 0x00004000) faultbitcode=faultbitcode+\"AFCI Module fault, \";\nif (msg.payload.faultbitcode & 0x00020000) faultbitcode=faultbitcode+\"Relay check fault, \";\nif (msg.payload.faultbitcode & 0x00200000) faultbitcode=faultbitcode+\"Communication error, \";\nif (msg.payload.faultbitcode & 0x00400000) faultbitcode=faultbitcode+\"Bus Voltage error, \";\nif (msg.payload.faultbitcode & 0x00800000) faultbitcode=faultbitcode+\"AutoTest fail, \";\nif (msg.payload.faultbitcode & 0x01000000) faultbitcode=faultbitcode+\"No Utility, \";\nif (msg.payload.faultbitcode & 0x02000000) faultbitcode=faultbitcode+\"PV Isolation Low, \";\nif (msg.payload.faultbitcode & 0x04000000) faultbitcode=faultbitcode+\"Residual I High, \";\nif (msg.payload.faultbitcode & 0x08000000) faultbitcode=faultbitcode+\"Output High DCI, \";\nif (msg.payload.faultbitcode & 0x10000000) faultbitcode=faultbitcode+\"PV Voltage high, \";\nif (msg.payload.faultbitcode & 0x20000000) faultbitcode=faultbitcode+\"AC V Outrange, \";\nif (msg.payload.faultbitcode & 0x40000000) faultbitcode=faultbitcode+\"AC F Outrange, \";\nif (msg.payload.faultbitcode & 0x80000000) faultbitcode=faultbitcode+\"TempratureHigh, \";\n\n\nif (faultbitcode!==\"\") {\n    msg.payload.faultbitcode_text = faultbitcode.substring(0, faultbitcode.length - 2);\n}\n\nlet warningbitcode = \"\";\nmsg.payload.warningbitcode_text = \"\";    \n\nif (msg.payload.warningbitcode & 0x0001) warningbitcode=warningbitcode+\"Fan warning, \";\nif (msg.payload.warningbitcode & 0x0002) warningbitcode=warningbitcode+\"String communication abnormal, \";\nif (msg.payload.warningbitcode & 0x0004) warningbitcode=warningbitcode+\"StrPIDconfig Warning, \";\nif (msg.payload.warningbitcode & 0x0010) warningbitcode=warningbitcode+\"DSP and COM firmware unmatch, \";\nif (msg.payload.warningbitcode & 0x0040) warningbitcode=warningbitcode+\"SPD abnormal, \";\nif (msg.payload.warningbitcode & 0x0080) warningbitcode=warningbitcode+\"GND and N connect abnormal, \";\nif (msg.payload.warningbitcode & 0x0100) warningbitcode=warningbitcode+\"PV1 or PV2 circuit short, \";\nif (msg.payload.warningbitcode & 0x0200) warningbitcode=warningbitcode+\"PV1 or PV2 boost driver broken, \";\n\n\nif (warningbitcode!==\"\") {\n    msg.payload.warningbitcode_text = warningbitcode.substring(0, warningbitcode.length - 2);\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 2080,
+        "wires": [
+            [
+                "7c1857127b5a4e4f"
+            ]
+        ]
+    },
+    {
+        "id": "3578a846411c1691",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1290,
+        "y": 2040,
+        "wires": []
+    },
+    {
+        "id": "65371eda4fd4e060",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "PVOutput.org update",
+        "func": "// Update the status with current timestamp\nvar now = new Date();\nvar yyyy = now.getFullYear();\nvar mm = now.getMonth() < 9 ? \"0\" + (now.getMonth() + 1) : (now.getMonth() + 1); // getMonth() is zero-based\nvar dd = now.getDate() < 10 ? \"0\" + now.getDate() : now.getDate();\nvar hh = now.getHours() < 10 ? \"0\" + now.getHours() : now.getHours();\nvar mmm = now.getMinutes() < 10 ? \"0\" + now.getMinutes() : now.getMinutes();\nvar ss = now.getSeconds() < 10 ? \"0\" + now.getSeconds() : now.getSeconds();\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Power: \" + msg.payload.outputpower + \" W, Etoday: \" + msg.payload.energytoday + \" kWh\" });\n\nmsg.url = \"https://pvoutput.org/service/r2/addstatus.jsp?\" + \n    \"key=YOUR_PVOUTPUT_API_KEY&sid=88033\" +\n    \"&d=\" + yyyy.toString() + mm.toString() + dd.toString()+\n    \"&t=\" + hh.toString() + \":\" + mmm.toString()+\n    \"&v1=\" + msg.payload.energytoday * 1000+\n    \"&v2=\" + msg.payload.outputpower+\n    \"&v5=\" + global.get(\"currenttemp\")+\n    \"&v6=\" + msg.payload.pv2voltage+\n    \"&c1=0\"+\n    \"&m1=\"+ global.get(\"weathercondition\").replace(\" \",\"%20\");\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 2140,
+        "wires": [
+            [
+                "434ef8f9f2ce6bdb"
+            ]
+        ]
+    },
+    {
+        "id": "434ef8f9f2ce6bdb",
+        "type": "http request",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1070,
+        "y": 2140,
+        "wires": [
+            [
+                "799b4a59e9a7245f"
+            ]
+        ]
+    },
+    {
+        "id": "799b4a59e9a7245f",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1250,
+        "y": 2140,
+        "wires": []
+    },
+    {
+        "id": "901e9918c7a79c5a",
+        "type": "delay",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "5",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 620,
+        "y": 2140,
+        "wires": [
+            [
+                "65371eda4fd4e060"
+            ]
+        ]
+    },
+    {
+        "id": "4099e84ae56ebd4a",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Diagnostic input message structure",
+        "func": "\nmsg.payload = msg.payload.fulltext.replace(/(?:\\r\\n|\\r|\\n)/g,\" | \");\nmsg.system = 45; // System id, use 1 for Dummy\nmsg.severity = 0; // 0: information, 1: warning, 2: error\nmsg.email = false; // if separate email should be sent\nmsg.emailtext = \"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 1900,
+        "wires": [
+            [
+                "dc9ca9075084b3e8"
+            ]
+        ]
+    },
+    {
+        "id": "dc9ca9075084b3e8",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "links": [
+            "13e089a7.73cb46"
+        ],
+        "x": 1235,
+        "y": 1900,
+        "wires": []
+    },
+    {
+        "id": "2d75ecb446b5b831",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Uptime and state management",
+        "func": "// check if the global flag for solar being down is set to true\nmsg.system = 45;\nlet currentuptime = msg.payload.uptime;\n\nmsg.state = context.get(\"state\") | 0;\nlet lastuptime = context.get(\"uptime\") | 0;\nlet lastupdate = context.get(\"lastupdate\");\nif (lastupdate===undefined) lastupdate = 0;\nlet now = new Date();\n\nlet system_text = \"Unknown\";\nlet system = global.get(\"Diag_System_Buffer\");\nsystem.forEach(function (element) {\n    if (element.sys_id === msg.system) {\n        system_text = element.sys_name;\n    }\n});\n\nif (msg.topic===\"update\") {\n\n    let current = now.getTime() - lastupdate;\n    current = Math.floor(current / 1000);\n\n    var minute = Math.floor(current / 60);\n    var hour = Math.floor(minute / 60);\n    var day = Math.floor(hour / 24);\n    if (current > 24 * 60 * 60) {\n        msg.payload = \"Last update \" + day + \" days, \" + hour % 24 + \" hours, \" + minute % 60 + \" minutes, \" + current % 60 + \" seconds ago\";\n    } else if (current > 60 * 60) {\n        msg.payload = \"Last update \" + hour % 24 + \" hours, \" + minute % 60 + \" minutes, \" + current % 60 + \" seconds ago\";\n    } else if (current > 60) {\n        msg.payload = \"Last update \" + minute % 60 + \" minutes, \" + current % 60 + \" seconds ago\";\n    } else {\n        msg.payload = \"Last update \" + current % 60 + \" seconds ago\";\n    }\n    node.status({fill:\"blue\",shape:\"ring\",text:msg.payload});\n\n    if ((current > 300) && (msg.state !== 99)) {\n        msg.payload = system_text+\" has gone offline\";\n        msg.state = 99;\n        context.set(\"state\", msg.state);\n        msg.severity = 2; // 0: information, 1: warning, 2: error\n        return msg;\n    }\n\n} else {\n\n    context.set(\"lastupdate\",now.getTime());\n    context.set(\"uptime\", currentuptime);\n    if (currentuptime < lastuptime) {\n        msg.payload = system_text+\" restarted: \" + lastuptime + \" -> \" + currentuptime;\n        msg.severity = 1; // 0: information, 1: warning, 2: error\n        return msg;\n    }\n\n    if (msg.state!==1) {\n        msg.state = 1;\n        context.set(\"state\",msg.state);\n        msg.payload = system_text+\" is now online\";\n        msg.severity = 0; // 0: information, 1: warning, 2: error\n        return msg;\n    }\n\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 2260,
+        "wires": [
+            [
+                "690b875ae5c71002",
+                "6f6deaf50ef0e2b6"
+            ]
+        ]
+    },
+    {
+        "id": "6f6deaf50ef0e2b6",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "links": [
+            "13e089a7.73cb46"
+        ],
+        "x": 1055,
+        "y": 2260,
+        "wires": []
+    },
+    {
+        "id": "e0f2393b782b33c4",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "Update",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "update",
+        "payloadType": "date",
+        "x": 460,
+        "y": 2220,
+        "wires": [
+            [
+                "2d75ecb446b5b831"
+            ]
+        ]
+    },
+    {
+        "id": "690b875ae5c71002",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 2220,
+        "wires": []
+    },
+    {
+        "id": "8ade4fb7762b8f46",
+        "type": "switch",
+        "z": "52b8ac534c9b15f7",
+        "name": "Outputpower > 0",
+        "property": "payload.outputpower",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 390,
+        "y": 2080,
+        "wires": [
+            [
+                "901e9918c7a79c5a",
+                "7c916704fddc1af2"
+            ]
+        ]
+    },
+    {
+        "id": "90b83cd59c1deed6",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 1900,
+        "wires": []
+    },
+    {
+        "id": "c3afcdaa2493f541",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram alert",
+        "func": "if (msg.topic===\"clear\") {\n    node.status({});\n    return null;\n}\n\nmsg.payload = { service: \"21\", type: \"message\", content: msg.payload.fulltext};\nnode.status({fill:\"red\",shape:\"ring\",text:msg.payload.content});\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 980,
+        "y": 2480,
+        "wires": [
+            [
+                "c4eb8841ba42122a"
+            ]
+        ]
+    },
+    {
+        "id": "c4eb8841ba42122a",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "86deb2f58b76aa52"
+        ],
+        "x": 1135,
+        "y": 2480,
+        "wires": []
+    },
+    {
+        "id": "9146a7f030f7b6b8",
+        "type": "comment",
+        "z": "52b8ac534c9b15f7",
+        "name": "Growatt2MQTT (3kW Old inverter)",
+        "info": "",
+        "x": 180,
+        "y": 2360,
+        "wires": []
+    },
+    {
+        "id": "ae86a533e76b3337",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram message",
+        "func": "let fulltext = \"☀️ Old inverter status: \" + msg.payload.status_text + \",\\nFault code: \" + msg.payload.faultcode_text + \"\\nWarning: \" + msg.payload.warningbitcode_text;\nlet shorttext = \"☀️ Old inverter Fault code: \"+msg.payload.faultcode_text+\"\\nWarning: \"+msg.payload.warningbitcode_text;\nmsg.payload.fulltext = fulltext;\nmsg.payload.shorttext = shorttext;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 610,
+        "y": 2480,
+        "wires": [
+            [
+                "7bb87188bed734d4"
+            ]
+        ]
+    },
+    {
+        "id": "7bb87188bed734d4",
+        "type": "rbe",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "func": "rbe",
+        "gap": "",
+        "start": "",
+        "inout": "out",
+        "septopics": true,
+        "property": "payload.shorttext",
+        "topi": "topic",
+        "x": 780,
+        "y": 2480,
+        "wires": [
+            [
+                "c3afcdaa2493f541",
+                "ec4bc2a495e9220b"
+            ]
+        ]
+    },
+    {
+        "id": "dddd98f4ae13ad89",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "Clear",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "clear",
+        "payload": "",
+        "payloadType": "date",
+        "x": 790,
+        "y": 2520,
+        "wires": [
+            [
+                "c3afcdaa2493f541"
+            ]
+        ]
+    },
+    {
+        "id": "98e8d3f7ccd754b4",
+        "type": "mqtt in",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "topic": "growatt/old/status",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "cea5258a.b34038",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 140,
+        "y": 2780,
+        "wires": [
+            [
+                "9400e1cef883176a"
+            ]
+        ]
+    },
+    {
+        "id": "e8576658296618b2",
+        "type": "mqtt in",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "topic": "growatt/old/data",
+        "qos": "2",
+        "datatype": "json",
+        "broker": "cea5258a.b34038",
+        "nl": false,
+        "rap": false,
+        "inputs": 0,
+        "x": 140,
+        "y": 2600,
+        "wires": [
+            [
+                "d20ddb1291c310c6",
+                "51ca7b4b55041e00",
+                "2a55e3d73c15b6ad"
+            ]
+        ]
+    },
+    {
+        "id": "e2620c4a02f2043a",
+        "type": "delay",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 610,
+        "y": 2600,
+        "wires": [
+            [
+                "fcd3eed541c7d134"
+            ]
+        ]
+    },
+    {
+        "id": "3d5a464fe6b56274",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Convert Growatt to Influx",
+        "func": "let measurement = \"solar\"\nlet inverter = \"old\";\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Power: \" + msg.payload.outputpower + \" W, Etoday: \" + msg.payload.energytoday+\" kWh\"});\nlet record = {\n    \"measurement\": measurement,\n    \"tags\": {\n        \"inverter\": inverter\n    },\n    \"fields\": {\n        \"status\": msg.payload.status,\n        \"solarpower\": msg.payload.solarpower,\n        \"pv1voltage\": msg.payload.pv1voltage,\n        \"pv1current\": msg.payload.pv1current,\n        \"pv1power\": msg.payload.pv1power,\n        \"pv2voltage\": msg.payload.pv2voltage,\n        \"pv2current\": msg.payload.pv2current,\n        \"pv2power\": msg.payload.pv2power,\n        \"outputpower\": msg.payload.outputpower,\n        \"gridfrequency\": msg.payload.gridfrequency,\n        \"gridvoltage\": msg.payload.gridvoltage,\n        \"energytoday\": msg.payload.energytoday,\n        \"energytotal\": msg.payload.energytotal,\n        \"totalworktime\": msg.payload.totalworktime,\n        \"tempinverter\": msg.payload.tempinverter,\n        \"tempipm\": msg.payload.tempipm,\n        \"faultcode\": msg.payload.faultcode,\n        \"warningbitcode\": msg.payload.warningbitcode,\n        \"status_text\": msg.payload.status_text,\n        \"faultcode_text\": msg.payload.faultcode_text,\n        \"warningbitcode_text\": msg.payload.warningbitcode_text\n     }\n};\n\nlet data = [];\n\ndata.push(record);\n\nmsg.payload = data;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 2600,
+        "wires": [
+            [
+                "e34592960a4ee8db",
+                "09cf637cd58bc76a"
+            ]
+        ]
+    },
+    {
+        "id": "09cf637cd58bc76a",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "0d3a8155db4e5123",
+            "783d71afcd0cb582"
+        ],
+        "x": 1225,
+        "y": 2600,
+        "wires": []
+    },
+    {
+        "id": "e34592960a4ee8db",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1290,
+        "y": 2560,
+        "wires": []
+    },
+    {
+        "id": "08f1848eefc6a2c9",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "PVOutput.org update",
+        "func": "// Update the status with current timestamp\nvar now = new Date();\nvar yyyy = now.getFullYear();\nvar mm = now.getMonth() < 9 ? \"0\" + (now.getMonth() + 1) : (now.getMonth() + 1); // getMonth() is zero-based\nvar dd = now.getDate() < 10 ? \"0\" + now.getDate() : now.getDate();\nvar hh = now.getHours() < 10 ? \"0\" + now.getHours() : now.getHours();\nvar mmm = now.getMinutes() < 10 ? \"0\" + now.getMinutes() : now.getMinutes();\nvar ss = now.getSeconds() < 10 ? \"0\" + now.getSeconds() : now.getSeconds();\n\nnode.status({ fill: \"green\", shape: \"ring\", text: \"Power: \" + msg.payload.outputpower + \" W, Etoday: \" + msg.payload.energytoday + \" kWh\" });\n\nmsg.url = \"https://pvoutput.org/service/r2/addstatus.jsp?\" + \n    \"key=YOUR_PVOUTPUT_API_KEY&sid=30101\" +\n    \"&d=\" + yyyy.toString() + mm.toString() + dd.toString()+\n    \"&t=\" + hh.toString() + \":\" + mmm.toString()+\n    \"&v1=\" + msg.payload.energytoday * 1000+\n    \"&v2=\" + msg.payload.outputpower+\n    \"&v5=\" + global.get(\"currenttemp\")+\n    \"&v6=\" + msg.payload.pv1voltage+\n    \"&c1=0\"+\n    \"&m1=\"+ global.get(\"weathercondition\").replace(\" \",\"%20\");\n\nreturn msg;\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 840,
+        "y": 2660,
+        "wires": [
+            [
+                "c4392edd3a7a4e3e"
+            ]
+        ]
+    },
+    {
+        "id": "c4392edd3a7a4e3e",
+        "type": "http request",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": "ignore",
+        "url": "",
+        "tls": "",
+        "persist": false,
+        "proxy": "",
+        "authType": "",
+        "senderr": false,
+        "x": 1070,
+        "y": 2660,
+        "wires": [
+            [
+                "a1d4172ffc40b991"
+            ]
+        ]
+    },
+    {
+        "id": "a1d4172ffc40b991",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 1250,
+        "y": 2660,
+        "wires": []
+    },
+    {
+        "id": "34bcf93ac2178c01",
+        "type": "delay",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "5",
+        "rateUnits": "minute",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 620,
+        "y": 2660,
+        "wires": [
+            [
+                "08f1848eefc6a2c9"
+            ]
+        ]
+    },
+    {
+        "id": "ec4bc2a495e9220b",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Diagnostic input message structure",
+        "func": "\nmsg.payload = msg.payload.fulltext.replace(/(?:\\r\\n|\\r|\\n)/g,\" | \");\nmsg.system = 46; // System id, use 1 for Dummy\nmsg.severity = 0; // 0: information, 1: warning, 2: error\nmsg.email = false; // if separate email should be sent\nmsg.emailtext = \"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1040,
+        "y": 2420,
+        "wires": [
+            [
+                "28e903f3fc922848"
+            ]
+        ]
+    },
+    {
+        "id": "28e903f3fc922848",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "links": [
+            "13e089a7.73cb46"
+        ],
+        "x": 1235,
+        "y": 2420,
+        "wires": []
+    },
+    {
+        "id": "9400e1cef883176a",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Uptime and state management",
+        "func": "// check if the global flag for solar being down is set to true\nmsg.system = 46;\nlet currentuptime = msg.payload.uptime;\n\nmsg.state = context.get(\"state\") | 0;\nlet lastuptime = context.get(\"uptime\") | 0;\nlet lastupdate = context.get(\"lastupdate\");\nif (lastupdate===undefined) lastupdate = 0;\nlet now = new Date();\n\nlet system_text = \"Unknown\";\nlet system = global.get(\"Diag_System_Buffer\");\nsystem.forEach(function (element) {\n    if (element.sys_id === msg.system) {\n        system_text = element.sys_name;\n    }\n});\n\nif (msg.topic===\"update\") {\n\n    let current = now.getTime() - lastupdate;\n    current = Math.floor(current / 1000);\n\n    var minute = Math.floor(current / 60);\n    var hour = Math.floor(minute / 60);\n    var day = Math.floor(hour / 24);\n    if (current > 24 * 60 * 60) {\n        msg.payload = \"Last update \" + day + \" days, \" + hour % 24 + \" hours, \" + minute % 60 + \" minutes, \" + current % 60 + \" seconds ago\";\n    } else if (current > 60 * 60) {\n        msg.payload = \"Last update \" + hour % 24 + \" hours, \" + minute % 60 + \" minutes, \" + current % 60 + \" seconds ago\";\n    } else if (current > 60) {\n        msg.payload = \"Last update \" + minute % 60 + \" minutes, \" + current % 60 + \" seconds ago\";\n    } else {\n        msg.payload = \"Last update \" + current % 60 + \" seconds ago\";\n    }\n    node.status({fill:\"blue\",shape:\"ring\",text:msg.payload});\n\n    if ((current > 300) && (msg.state !== 99)) {\n        msg.payload = system_text+\" has gone offline\";\n        msg.state = 99;\n        context.set(\"state\", msg.state);\n        msg.severity = 2; // 0: information, 1: warning, 2: error\n        return msg;\n    }\n\n} else {\n\n    context.set(\"lastupdate\",now.getTime());\n    context.set(\"uptime\", currentuptime);\n    if (currentuptime < lastuptime) {\n        msg.payload = system_text+\" restarted: \" + lastuptime + \" -> \" + currentuptime;\n        msg.severity = 1; // 0: information, 1: warning, 2: error\n        return msg;\n    }\n\n    if (msg.state!==1) {\n        msg.state = 1;\n        context.set(\"state\",msg.state);\n        msg.payload = system_text+\" is now online\";\n        msg.severity = 0; // 0: information, 1: warning, 2: error\n        return msg;\n    }\n\n}\n\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 690,
+        "y": 2780,
+        "wires": [
+            [
+                "819b403bfefdf72d",
+                "98896b76a7540421"
+            ]
+        ]
+    },
+    {
+        "id": "98896b76a7540421",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "links": [
+            "13e089a7.73cb46"
+        ],
+        "x": 1055,
+        "y": 2780,
+        "wires": []
+    },
+    {
+        "id": "3a5cf61b615e86c6",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "Update",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "10",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "update",
+        "payloadType": "date",
+        "x": 460,
+        "y": 2740,
+        "wires": [
+            [
+                "9400e1cef883176a"
+            ]
+        ]
+    },
+    {
+        "id": "819b403bfefdf72d",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 940,
+        "y": 2740,
+        "wires": []
+    },
+    {
+        "id": "d20ddb1291c310c6",
+        "type": "switch",
+        "z": "52b8ac534c9b15f7",
+        "name": "Outputpower > 0",
+        "property": "payload.outputpower",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "gt",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 390,
+        "y": 2600,
+        "wires": [
+            [
+                "34bcf93ac2178c01",
+                "e2620c4a02f2043a",
+                "84a924fd1eb0a954"
+            ]
+        ]
+    },
+    {
+        "id": "51ca7b4b55041e00",
+        "type": "debug",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 390,
+        "y": 2420,
+        "wires": []
+    },
+    {
+        "id": "fcd3eed541c7d134",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Add text (old)",
+        "func": "msg.payload.status_text = \"\";\nswitch (msg.payload.status) {\n    case 0:\n        msg.payload.status_text = \"Waiting\";\n        break;\n    case 1:\n        msg.payload.status_text = \"Normal\";\n        break;\n    case 3:\n        msg.payload.status_text = \"Fault\";\n        break;\n}\n\n/*\nmsg.payload.deratingmode_text = \"\";\nswitch (msg.payload.deratingmode) {\n    case 0: msg.payload.deratingmode_text = \"No derate\"; break;\n    case 1: msg.payload.deratingmode_text = \"PV\"; break;\n    case 2: msg.payload.deratingmode_text = \"*\"; break;\n    case 3: msg.payload.deratingmode_text = \"Vac\"; break;\n    case 4: msg.payload.deratingmode_text = \"Fac\"; break;\n    case 5: msg.payload.deratingmode_text = \"Tboost\"; break;\n    case 6: msg.payload.deratingmode_text = \"Tinv\"; break;\n    case 7: msg.payload.deratingmode_text = \"Control\"; break;\n    case 8: msg.payload.deratingmode_text = \"*\"; break;\n    case 9: msg.payload.deratingmode_text = \"*OverBac\"; break;\n}\n*/\n\nmsg.payload.faultcode_text = \"\";\nswitch (msg.payload.faultcode) {\n    case 0: msg.payload.faultcode_text = \"No fault\"; break;\n    case 1: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 2: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 3: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 4: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 5: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 6: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 7: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 8: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 9: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 10: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 11: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 12: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 13: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 14: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 15: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 16: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 17: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 18: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 19: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 20: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 21: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 22: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 23: msg.payload.faultcode_text = \"Error 99+x\"; break;\n    case 24: msg.payload.faultcode_text = \"Auto Test Failed\"; break;\n    case 25: msg.payload.faultcode_text = \"No AC Connection\"; break;\n    case 26: msg.payload.faultcode_text = \"PV Isolation Low\"; break;\n    case 27: msg.payload.faultcode_text = \"Residual I High\"; break;\n    case 28: msg.payload.faultcode_text = \"Output High DCI\"; break;\n    case 29: msg.payload.faultcode_text = \"PV Voltage High\"; break;\n    case 30: msg.payload.faultcode_text = \"AC V Outrange\"; break;\n    case 31: msg.payload.faultcode_text = \"AC F Outrange\"; break;\n    case 32: msg.payload.faultcode_text = \"Module Hot\"; break;\n}\n\n/*\nlet faultbitcode = \"\";\nmsg.payload.faultbitcode_text = \"\";\n\nif (msg.payload.faultbitcode & 0x00000002) faultbitcode = faultbitcode + \"Communication error, \";\nif (msg.payload.faultbitcode & 0x00000008) faultbitcode = faultbitcode + \"StrReverse or StrShort fault, \";\nif (msg.payload.faultbitcode & 0x00000010) faultbitcode = faultbitcode + \"Model Init fault, \";\nif (msg.payload.faultbitcode & 0x00000020) faultbitcode = faultbitcode + \"Grid Volt Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000040) faultbitcode = faultbitcode + \"ISO Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00000080) faultbitcode = faultbitcode + \"GFCI Sample diffirent, \";\nif (msg.payload.faultbitcode & 0x00001000) faultbitcode = faultbitcode + \"AFCI Fault, \";\nif (msg.payload.faultbitcode & 0x00004000) faultbitcode = faultbitcode + \"AFCI Module fault, \";\nif (msg.payload.faultbitcode & 0x00020000) faultbitcode = faultbitcode + \"Relay check fault, \";\nif (msg.payload.faultbitcode & 0x00200000) faultbitcode = faultbitcode + \"Communication error, \";\nif (msg.payload.faultbitcode & 0x00400000) faultbitcode = faultbitcode + \"Bus Voltage error, \";\nif (msg.payload.faultbitcode & 0x00800000) faultbitcode = faultbitcode + \"AutoTest fail, \";\nif (msg.payload.faultbitcode & 0x01000000) faultbitcode = faultbitcode + \"No Utility, \";\nif (msg.payload.faultbitcode & 0x02000000) faultbitcode = faultbitcode + \"PV Isolation Low, \";\nif (msg.payload.faultbitcode & 0x04000000) faultbitcode = faultbitcode + \"Residual I High, \";\nif (msg.payload.faultbitcode & 0x08000000) faultbitcode = faultbitcode + \"Output High DCI, \";\nif (msg.payload.faultbitcode & 0x10000000) faultbitcode = faultbitcode + \"PV Voltage high, \";\nif (msg.payload.faultbitcode & 0x20000000) faultbitcode = faultbitcode + \"AC V Outrange, \";\nif (msg.payload.faultbitcode & 0x40000000) faultbitcode = faultbitcode + \"AC F Outrange, \";\nif (msg.payload.faultbitcode & 0x80000000) faultbitcode = faultbitcode + \"TempratureHigh, \";\n\n\nif (faultbitcode !== \"\") {\n    msg.payload.faultbitcode_text = faultbitcode.substring(0, faultbitcode.length - 2);\n}\n*/\n\n// This was not documented for this model, only for later models. But may still work\nlet warningbitcode = \"\";\nmsg.payload.warningbitcode_text = \"\";\n\nif (msg.payload.warningbitcode & 0x0001) warningbitcode = warningbitcode + \"Fan warning, \";\nif (msg.payload.warningbitcode & 0x0002) warningbitcode = warningbitcode + \"String communication abnormal, \";\nif (msg.payload.warningbitcode & 0x0004) warningbitcode = warningbitcode + \"StrPIDconfig Warning, \";\nif (msg.payload.warningbitcode & 0x0010) warningbitcode = warningbitcode + \"DSP and COM firmware unmatch, \";\nif (msg.payload.warningbitcode & 0x0040) warningbitcode = warningbitcode + \"SPD abnormal, \";\nif (msg.payload.warningbitcode & 0x0080) warningbitcode = warningbitcode + \"GND and N connect abnormal, \";\nif (msg.payload.warningbitcode & 0x0100) warningbitcode = warningbitcode + \"PV1 or PV2 circuit short, \";\nif (msg.payload.warningbitcode & 0x0200) warningbitcode = warningbitcode + \"PV1 or PV2 boost driver broken, \";\n\n\nif (warningbitcode !== \"\") {\n    msg.payload.warningbitcode_text = warningbitcode.substring(0, warningbitcode.length - 2);\n}\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 790,
+        "y": 2600,
+        "wires": [
+            [
+                "3d5a464fe6b56274"
+            ]
+        ]
+    },
+    {
+        "id": "f887b7d6114752c6",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "10:00 check",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 10 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 1540,
+        "y": 1500,
+        "wires": [
+            [
+                "6ac32a21c04abb3b"
+            ]
+        ]
+    },
+    {
+        "id": "6ac32a21c04abb3b",
+        "type": "influxdb in",
+        "z": "52b8ac534c9b15f7",
+        "influxdb": "2dce016f48a38240",
+        "name": "Growatt",
+        "query": "from(bucket: \"nodered\")\n  |> range(start: -4h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\n  |> filter(fn: (r) => r[\"inverter\"] == \"garage\")\n  |> filter(fn: (r) => r[\"_field\"] == \"outputpower\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "nygmatech",
+        "x": 1750,
+        "y": 1500,
+        "wires": [
+            [
+                "acc560897d013173"
+            ]
+        ]
+    },
+    {
+        "id": "9037a9cf9858a00b",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram alert",
+        "func": "msg.payload = {service: \"21\", type:\"message\", content:\"No data collected from Garage Solar today\"};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2120,
+        "y": 1560,
+        "wires": [
+            [
+                "3ab14788c4363210"
+            ]
+        ]
+    },
+    {
+        "id": "3ab14788c4363210",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "86deb2f58b76aa52"
+        ],
+        "x": 2275,
+        "y": 1560,
+        "wires": []
+    },
+    {
+        "id": "9b31fcc07673ff8b",
+        "type": "comment",
+        "z": "52b8ac534c9b15f7",
+        "name": "Check data collection",
+        "info": "",
+        "x": 1540,
+        "y": 1440,
+        "wires": []
+    },
+    {
+        "id": "efc884776257a341",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Diagnostic input message structure",
+        "func": "\nmsg.payload = \"No data collected from Garage Solar today\";\nmsg.system = 44; // System id, use 1 for Dummy\nmsg.severity = 2; // 0: information, 1: warning, 2: error\nmsg.email = false; // if separate email should be sent\nmsg.emailtext = \"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2180,
+        "y": 1500,
+        "wires": [
+            [
+                "8a0831e8fc4f0351"
+            ]
+        ]
+    },
+    {
+        "id": "8a0831e8fc4f0351",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "links": [
+            "13e089a7.73cb46"
+        ],
+        "x": 2375,
+        "y": 1500,
+        "wires": []
+    },
+    {
+        "id": "acc560897d013173",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Check data",
+        "func": "if (msg.payload.length===0) {\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1930,
+        "y": 1500,
+        "wires": [
+            [
+                "efc884776257a341",
+                "9037a9cf9858a00b"
+            ]
+        ]
+    },
+    {
+        "id": "9310d4659e1f0766",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "10:00 check",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 10 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 1530,
+        "y": 2060,
+        "wires": [
+            [
+                "e866b033a2bfe53a"
+            ]
+        ]
+    },
+    {
+        "id": "e866b033a2bfe53a",
+        "type": "influxdb in",
+        "z": "52b8ac534c9b15f7",
+        "influxdb": "2dce016f48a38240",
+        "name": "Growatt",
+        "query": "from(bucket: \"nodered\")\n  |> range(start: -4h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\n  |> filter(fn: (r) => r[\"inverter\"] == \"small\")\n  |> filter(fn: (r) => r[\"_field\"] == \"outputpower\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "nygmatech",
+        "x": 1740,
+        "y": 2060,
+        "wires": [
+            [
+                "4123a8dcaff17158"
+            ]
+        ]
+    },
+    {
+        "id": "43e31c8ca60a5177",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram alert",
+        "func": "msg.payload = {service: \"21\", type:\"message\", content:\"No data collected from Small Solar today\"};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2110,
+        "y": 2120,
+        "wires": [
+            [
+                "c8852bacce460441"
+            ]
+        ]
+    },
+    {
+        "id": "c8852bacce460441",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "86deb2f58b76aa52"
+        ],
+        "x": 2265,
+        "y": 2120,
+        "wires": []
+    },
+    {
+        "id": "9dde7adff4323c2d",
+        "type": "comment",
+        "z": "52b8ac534c9b15f7",
+        "name": "Check data collection",
+        "info": "",
+        "x": 1530,
+        "y": 2000,
+        "wires": []
+    },
+    {
+        "id": "3c035ebc73be842c",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Diagnostic input message structure",
+        "func": "\nmsg.payload = \"No data collected from Small Solar today\";\nmsg.system = 45; // System id, use 1 for Dummy\nmsg.severity = 2; // 0: information, 1: warning, 2: error\nmsg.email = false; // if separate email should be sent\nmsg.emailtext = \"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2170,
+        "y": 2060,
+        "wires": [
+            [
+                "88c60195af7a4a40"
+            ]
+        ]
+    },
+    {
+        "id": "88c60195af7a4a40",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "links": [
+            "13e089a7.73cb46"
+        ],
+        "x": 2365,
+        "y": 2060,
+        "wires": []
+    },
+    {
+        "id": "4123a8dcaff17158",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Check data",
+        "func": "if (msg.payload.length===0) {\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1920,
+        "y": 2060,
+        "wires": [
+            [
+                "3c035ebc73be842c",
+                "43e31c8ca60a5177"
+            ]
+        ]
+    },
+    {
+        "id": "afa01b298bdd2925",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "10:00 check",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 10 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 1530,
+        "y": 2560,
+        "wires": [
+            [
+                "c03e18cdd103f726"
+            ]
+        ]
+    },
+    {
+        "id": "c03e18cdd103f726",
+        "type": "influxdb in",
+        "z": "52b8ac534c9b15f7",
+        "influxdb": "2dce016f48a38240",
+        "name": "Growatt",
+        "query": "from(bucket: \"nodered\")\n  |> range(start: -4h)\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\n  |> filter(fn: (r) => r[\"inverter\"] == \"old\")\n  |> filter(fn: (r) => r[\"_field\"] == \"outputpower\")",
+        "rawOutput": false,
+        "precision": "",
+        "retentionPolicy": "",
+        "org": "nygmatech",
+        "x": 1740,
+        "y": 2560,
+        "wires": [
+            [
+                "722528aecafb8e91"
+            ]
+        ]
+    },
+    {
+        "id": "1af099055452a08e",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram alert",
+        "func": "msg.payload = {service: \"21\", type:\"message\", content:\"No data collected from Old Solar today\"};\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2110,
+        "y": 2620,
+        "wires": [
+            [
+                "803901d975b431fb"
+            ]
+        ]
+    },
+    {
+        "id": "803901d975b431fb",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "86deb2f58b76aa52"
+        ],
+        "x": 2265,
+        "y": 2620,
+        "wires": []
+    },
+    {
+        "id": "9f0ab0cc053beca3",
+        "type": "comment",
+        "z": "52b8ac534c9b15f7",
+        "name": "Check data collection",
+        "info": "",
+        "x": 1530,
+        "y": 2500,
+        "wires": []
+    },
+    {
+        "id": "79f4dc5d7f255eb8",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Diagnostic input message structure",
+        "func": "\nmsg.payload = \"No data collected from Old Solar today\";\nmsg.system = 46; // System id, use 1 for Dummy\nmsg.severity = 2; // 0: information, 1: warning, 2: error\nmsg.email = false; // if separate email should be sent\nmsg.emailtext = \"\";\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2170,
+        "y": 2560,
+        "wires": [
+            [
+                "74f7e9b9b98f09d5"
+            ]
+        ]
+    },
+    {
+        "id": "74f7e9b9b98f09d5",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "links": [
+            "13e089a7.73cb46"
+        ],
+        "x": 2365,
+        "y": 2560,
+        "wires": []
+    },
+    {
+        "id": "722528aecafb8e91",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Check data",
+        "func": "if (msg.payload.length===0) {\n    return msg;\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1920,
+        "y": 2560,
+        "wires": [
+            [
+                "79f4dc5d7f255eb8",
+                "1af099055452a08e"
+            ]
+        ]
+    },
+    {
+        "id": "b96ad2dd709194f4",
+        "type": "comment",
+        "z": "52b8ac534c9b15f7",
+        "name": "Daily totals",
+        "info": "",
+        "x": 100,
+        "y": 2880,
+        "wires": []
+    },
+    {
+        "id": "04ea701f517ec045",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Calculation",
+        "func": "let arr = msg.topic.split(\"/\");\n\nlet growatt = flow.get(\"growatt\");\nif (growatt===undefined) {\n    growatt = {\"total\": { \"outputpower\": 0, \"energytoday\": 0, \"energytotal\": 0}, \"maxoutputpower\": {\"old\": 0, \"small\": 0, \"garage\": 0} };\n}\n\ngrowatt[arr[1]] = msg.payload;\n\n\nif ((growatt.small !== undefined) && (growatt.old !== undefined) && (growatt.garage !== undefined)) {\n\n    growatt.total.outputpower = growatt.small.outputpower + growatt.old.outputpower + growatt.garage.outputpower;\n    growatt.total.energytoday = growatt.small.energytoday + growatt.old.energytoday + growatt.garage.energytoday;\n    growatt.total.energytotal = growatt.small.energytotal + growatt.old.energytotal + growatt.garage.energytotal;\n\n\n}\n\nflow.set(\"growatt\", growatt);\n\nif (growatt.small !== undefined) {\n    if (growatt.maxoutputpower.small < growatt.small.outputpower) growatt.maxoutputpower.small = growatt.small.outputpower;\n}\nif (growatt.old !== undefined) {\n    if (growatt.maxoutputpower.old < growatt.old.outputpower) growatt.maxoutputpower.old = growatt.old.outputpower;\n}\nif (growatt.garage !== undefined) {\n    if (growatt.maxoutputpower.garage < growatt.garage.outputpower) growatt.maxoutputpower.garage = growatt.garage.outputpower;\n}\n\n\nflow.set(\"growatt\", growatt);\nglobal.set(\"growatt\", growatt);\nmsg.payload = growatt;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 270,
+        "y": 2960,
+        "wires": [
+            [
+                "db474da2b49af7f3",
+                "d7e8811a4e4d80b8",
+                "83af28b9c97d0207"
+            ]
+        ]
+    },
+    {
+        "id": "c2fed05e83b2fe22",
+        "type": "link in",
+        "z": "52b8ac534c9b15f7",
+        "name": "Growatt Daily Totals",
+        "links": [
+            "84a924fd1eb0a954",
+            "eb00c38bb027aab4",
+            "5ef5a977234c0aba"
+        ],
+        "x": 135,
+        "y": 2960,
+        "wires": [
+            [
+                "04ea701f517ec045"
+            ]
+        ]
+    },
+    {
+        "id": "84a924fd1eb0a954",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "c2fed05e83b2fe22"
+        ],
+        "x": 375,
+        "y": 2680,
+        "wires": []
+    },
+    {
+        "id": "eb00c38bb027aab4",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "c2fed05e83b2fe22"
+        ],
+        "x": 315,
+        "y": 2140,
+        "wires": []
+    },
+    {
+        "id": "5ef5a977234c0aba",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "c2fed05e83b2fe22"
+        ],
+        "x": 315,
+        "y": 1600,
+        "wires": []
+    },
+    {
+        "id": "db474da2b49af7f3",
+        "type": "smooth",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "property": "payload.total.outputpower",
+        "action": "mean",
+        "count": "100",
+        "round": "",
+        "mult": "single",
+        "reduce": false,
+        "x": 480,
+        "y": 2960,
+        "wires": [
+            [
+                "2cb134844fd4c0e4"
+            ]
+        ]
+    },
+    {
+        "id": "69d57f14f3ce14ea",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "Update",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "update",
+        "payloadType": "date",
+        "x": 530,
+        "y": 3000,
+        "wires": [
+            [
+                "2cb134844fd4c0e4"
+            ]
+        ]
+    },
+    {
+        "id": "a3987d22613c55a7",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Telegram alert",
+        "func": "let growatt = flow.get(\"growatt\");\n\nmsg.payload = { service: \"21\", type: \"message\", content: \"☀️ Today: \"+growatt.total.energytoday.toFixed(2)+\" kWh\"};\nnode.status({fill:\"red\",shape:\"ring\",text:msg.payload.content});\nreturn msg;\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1060,
+        "y": 2960,
+        "wires": [
+            [
+                "c529dd0db679cefa"
+            ]
+        ]
+    },
+    {
+        "id": "c529dd0db679cefa",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "86deb2f58b76aa52"
+        ],
+        "x": 1215,
+        "y": 2960,
+        "wires": []
+    },
+    {
+        "id": "ad84208f583612b2",
+        "type": "inject",
+        "z": "52b8ac534c9b15f7",
+        "name": "03:00",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "00 03 * * *",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payloadType": "date",
+        "x": 200,
+        "y": 3120,
+        "wires": [
+            [
+                "533174836930bd61"
+            ]
+        ]
+    },
+    {
+        "id": "533174836930bd61",
+        "type": "change",
+        "z": "52b8ac534c9b15f7",
+        "name": "Delete growatt",
+        "rules": [
+            {
+                "t": "delete",
+                "p": "growatt",
+                "pt": "flow"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 410,
+        "y": 3120,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d7e8811a4e4d80b8",
+        "type": "link out",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "mode": "link",
+        "links": [
+            "8da469470bcccf7a"
+        ],
+        "x": 415,
+        "y": 3040,
+        "wires": []
+    },
+    {
+        "id": "2cb134844fd4c0e4",
+        "type": "function",
+        "z": "52b8ac534c9b15f7",
+        "name": "Solar state",
+        "func": "var OnTreshold = 100;  // device considered On if the average is higher than this value\nvar OffTreshold = 10;    // device considered Off in the average is lower than this value\n\nvar state = context.get(\"state\");\nif (state===undefined) {\n    state = false;\n}\n\nif ((state===false)&&(msg.payload.total.outputpower>OnTreshold)) {\n    state = true;\n    context.set(\"state\",state);\n    node.status({fill:(state ? \"red\": \"blue\"),shape:\"ring\",text:\"State: \"+(state ? \"ON\": \"OFF\")});    \n    return [{topic: \"state\", payload: \"1\"}];\n}\n\nif ((state === true) && (msg.payload.total.outputpower<OffTreshold)) {\n    state = false;\n    context.set(\"state\",state);\n    node.status({fill:(state ? \"red\": \"blue\"),shape:\"ring\",text:\"State: \"+(state ? \"ON\": \"OFF\")});    \n    return [{topic: \"state\", payload: \"0\"}];\n}\n\nnode.status({fill:(state ? \"red\": \"blue\"),shape:\"ring\",text:\"State: \"+(state ? \"ON\": \"OFF\")});  ",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 710,
+        "y": 2960,
+        "wires": [
+            [
+                "9cc69d54a778d91e"
+            ]
+        ]
+    },
+    {
+        "id": "9cc69d54a778d91e",
+        "type": "switch",
+        "z": "52b8ac534c9b15f7",
+        "name": "Off?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "0",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 1,
+        "x": 890,
+        "y": 2960,
+        "wires": [
+            [
+                "a3987d22613c55a7"
+            ]
+        ]
+    },
+    {
+        "id": "83af28b9c97d0207",
+        "type": "change",
+        "z": "52b8ac534c9b15f7",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "payload",
+                "pt": "msg",
+                "to": "msg.payload.total.energytoday*10",
+                "tot": "jsonata"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 480,
+        "y": 3080,
+        "wires": [
+            [
+                "98893f1bc9a52cb7"
+            ]
+        ]
+    },
+    {
+        "id": "98893f1bc9a52cb7",
+        "type": "modbus-write",
+        "z": "52b8ac534c9b15f7",
+        "name": "Solar total",
+        "showStatusActivities": false,
+        "showErrors": false,
+        "unitid": "1",
+        "dataType": "HoldingRegister",
+        "adr": "0",
+        "quantity": "1",
+        "server": "511c41f83df69fd5",
+        "emptyMsgOnFail": false,
+        "keepMsgProperties": false,
+        "x": 710,
+        "y": 3080,
+        "wires": [
+            [],
+            []
+        ]
+    },
+    {
+        "id": "0d780513441b33ca",
+        "type": "comment",
+        "z": "52b8ac534c9b15f7",
+        "name": "Send solar data to HMI",
+        "info": "",
+        "x": 940,
+        "y": 3080,
+        "wires": []
+    },
+    {
+        "id": "cea5258a.b34038",
+        "type": "mqtt-broker",
+        "name": "",
+        "broker": "192.168.1.80",
+        "port": "1883",
+        "clientid": "node-red",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": "4",
+        "keepalive": "60",
+        "cleansession": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willPayload": "",
+        "willMsg": {},
+        "sessionExpiry": ""
+    },
+    {
+        "id": "2dce016f48a38240",
+        "type": "influxdb",
+        "hostname": "127.0.0.1",
+        "port": "8086",
+        "protocol": "http",
+        "database": "database",
+        "name": "InfluxDB",
+        "usetls": false,
+        "tls": "",
+        "influxdbVersion": "2.0",
+        "url": "http://localhost:8086",
+        "rejectUnauthorized": false
+    },
+    {
+        "id": "511c41f83df69fd5",
+        "type": "modbus-client",
+        "name": "Rievtech HMI",
+        "clienttype": "tcp",
+        "bufferCommands": true,
+        "stateLogEnabled": false,
+        "queueLogEnabled": false,
+        "tcpHost": "192.168.1.212",
+        "tcpPort": "502",
+        "tcpType": "DEFAULT",
+        "serialPort": "/dev/ttyUSB",
+        "serialType": "RTU-BUFFERD",
+        "serialBaudrate": "9600",
+        "serialDatabits": "8",
+        "serialStopbits": "1",
+        "serialParity": "none",
+        "serialConnectionDelay": "100",
+        "serialAsciiResponseStartDelimiter": "0x3A",
+        "unit_id": "1",
+        "commandDelay": "1",
+        "clientTimeout": "1000",
+        "reconnectOnTimeout": true,
+        "reconnectTimeout": "2000",
+        "parallelUnitIdsAllowed": true
+    }
+]

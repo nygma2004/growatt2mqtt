@@ -1,0 +1,2451 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 14,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 7,
+      "panels": [],
+      "title": "Summary",
+      "type": "row"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 4,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 1
+      },
+      "id": 3,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "/^_value$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: -24h)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"energytotal\")\r\n  |> last()\r\n  |> group()",
+          "refId": "A"
+        }
+      ],
+      "title": "Lifetime Generation",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "blue",
+                "value": 10
+              },
+              {
+                "color": "purple",
+                "value": 20
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 1
+      },
+      "id": 2,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "/^_value$/",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: today())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"energytoday\")\r\n  |> last()\r\n  |> group()\r\n",
+          "refId": "A"
+        }
+      ],
+      "title": "Generation Today",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "green",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 8,
+        "y": 1
+      },
+      "id": 38,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "sum"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"totalworktime\")\r\n  |> last()\r\n  |> group()",
+          "refId": "A"
+        }
+      ],
+      "title": "Worktime",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 11,
+        "y": 1
+      },
+      "id": 45,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^balance electricity$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "billed = from(bucket: \"nodered\")\r\n  |> range(start: -2y)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meterreadings\")\r\n  |> filter(fn: (r) => r[\"type\"] == \"electricity\")\r\n  |> filter(fn: (r) => r[\"billing\"] == \"yes\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"offpeak\" or r[\"_field\"] == \"peak_generated\" or r[\"_field\"] == \"peak_used\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> drop(columns: [\"_start\",\"_stop\",\"billing\",\"_measurement\"])\r\n\r\ncurrent = from(bucket: \"nodered\")\r\n  |> range(start: -2y)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meterreadings\")\r\n  |> filter(fn: (r) => r[\"type\"] == \"electricity\")\r\n  |> filter(fn: (r) => r[\"billing\"] == \"no\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"offpeak\" or r[\"_field\"] == \"peak_generated\" or r[\"_field\"] == \"peak_used\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> drop(columns: [\"_start\",\"_stop\",\"billing\",\"_measurement\"])\r\n\r\njoin(tables: {billed: billed, current: current}, on: [\"type\"])\r\n  |>  map(fn: (r) => ({ r with balance: -(r.peak_used_current-r.peak_used_billed)+(r.peak_generated_current-r.peak_generated_billed) }))  ",
+          "refId": "A"
+        }
+      ],
+      "title": "Balance",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 0
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 14,
+        "y": 1
+      },
+      "id": 46,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^balance_est$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "billed = from(bucket: \"nodered\")\r\n  |> range(start: -2y)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meterreadings\")\r\n  |> filter(fn: (r) => r[\"type\"] == \"electricity\")\r\n  |> filter(fn: (r) => r[\"billing\"] == \"yes\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"offpeak\" or r[\"_field\"] == \"peak_generated\" or r[\"_field\"] == \"peak_used\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> drop(columns: [\"_start\",\"_stop\",\"billing\",\"_measurement\"])\r\n\r\ncurrent = from(bucket: \"nodered\")\r\n  |> range(start: -2y)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meterreadings\")\r\n  |> filter(fn: (r) => r[\"type\"] == \"electricity\")\r\n  |> filter(fn: (r) => r[\"billing\"] == \"no\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"offpeak\" or r[\"_field\"] == \"peak_generated\" or r[\"_field\"] == \"peak_used\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> drop(columns: [\"_start\",\"_stop\",\"billing\",\"_measurement\"])\r\n\r\nmeterreadings = join(tables: {billed: billed, current: current}, on: [\"type\"])\r\n  |> map(fn: (r) => ({ r with balance: -(r.peak_used_current-r.peak_used_billed)+(r.peak_generated_current-r.peak_generated_billed) }))\r\n  |> map(fn: (r) => ({ r with join: 1 }))\r\n\r\n// Get the time for the last meter reading\r\ncurrent_time = from(bucket: \"nodered\")\r\n  |> range(start: -2y)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"meterreadings\")\r\n  |> filter(fn: (r) => r[\"type\"] == \"electricity\")\r\n  |> filter(fn: (r) => r[\"billing\"] == \"no\")\r\n  |> last()\r\n  |> tableFind(fn: (key) => key._field == \"offpeak\")\r\n  |> getRecord(idx: 0)\r\n\r\n// Get the usage from Shelly before the meter reading\r\nold_usage = from(bucket: \"nodered\")\r\n  |> range(start: -2y, stop:current_time._time)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensors\")\r\n  |> filter(fn: (r) => r[\"device\"] == \"house_phase0\" or r[\"device\"] == \"house_phase1\" or r[\"device\"] == \"house_phase2\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"total\" or r[\"_field\"] == \"total_returned\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"_measurement\"], columnKey: [\"device\", \"_field\"], valueColumn: \"_value\")\r\n\r\n// Get the latest usage from Shelly\r\ncurrent_usage = from(bucket: \"nodered\")\r\n  |> range(start: -1w)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensors\")\r\n  |> filter(fn: (r) => r[\"device\"] == \"house_phase0\" or r[\"device\"] == \"house_phase1\" or r[\"device\"] == \"house_phase2\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"total\" or r[\"_field\"] == \"total_returned\")\r\n  |> last()\r\n  |> pivot(rowKey: [\"_measurement\"], columnKey: [\"device\", \"_field\"], valueColumn: \"_value\")\r\n\r\n// Combine the tables containing the Shelly readings and calculate the combined difference\r\nshelly = join(tables: {old_usage: old_usage, current_usage: current_usage}, on: [\"_measurement\"])\r\n  |>  map(fn: (r) => ({ r with shelly_usage: (-(r.house_phase0_total_current_usage-r.house_phase0_total_old_usage)-\r\n    (r.house_phase1_total_current_usage-r.house_phase1_total_old_usage)-\r\n    (r.house_phase2_total_current_usage-r.house_phase2_total_old_usage)+\r\n    (r.house_phase0_total_returned_current_usage-r.house_phase0_total_returned_old_usage)+\r\n    (r.house_phase1_total_returned_current_usage-r.house_phase1_total_returned_old_usage)+\r\n    (r.house_phase2_total_returned_current_usage-r.house_phase2_total_returned_old_usage)\r\n    )/1000.0 }))\r\n  |> map(fn: (r) => ({ r with join: 1 }))\r\n\r\njoin(tables: {meterreadings : meterreadings , shelly: shelly}, on: [\"join\"])\r\n  |>  map(fn: (r) => ({ r with balance_est: r.shelly_usage+r.balance}))\r\n  |> keep(columns: [\"balance_est\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Balance (estimated)",
+      "type": "stat"
+    },
+    {
+      "datasource": {
+        "type": "influxdb",
+        "uid": "4bKb1VA7k"
+      },
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "outputpower garage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Garage Inverter"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "orange",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "outputpower old"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Old Inverter"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "blue",
+                  "mode": "fixed"
+                }
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "outputpower small"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "watt"
+              },
+              {
+                "id": "color",
+                "value": {
+                  "fixedColor": "purple",
+                  "mode": "fixed"
+                }
+              },
+              {
+                "id": "displayName",
+                "value": "Small Inverter"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 5
+      },
+      "id": 5,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "4bKb1VA7k"
+          },
+          "query": "starttime = from(bucket: \"nodered\")\r\n  |> range(start: today())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"outputpower\")\r\n  |> group()\r\n  |> first()\r\n  |> group(columns: [\"_field\", \"_measurement\"], mode:\"by\")\r\n  |> tableFind(fn: (key) => key._field == \"outputpower\")\r\n  |> getRecord(idx: 0)\r\n\r\nendtime = from(bucket: \"nodered\")\r\n  |> range(start: today())\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"outputpower\")\r\n  |> group()\r\n  |> last()\r\n  |> group(columns: [\"_field\", \"_measurement\"], mode:\"by\")\r\n  |> tableFind(fn: (key) => key._field == \"outputpower\")\r\n  |> getRecord(idx: 0)\r\n\r\nfrom(bucket: \"nodered\")\r\n  |> range(start: starttime._time, stop: endtime._time)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"outputpower\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Power Generation Today",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 13
+      },
+      "id": 9,
+      "panels": [],
+      "title": "Garage Inverter (3kW)",
+      "type": "row"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 0,
+        "y": 14
+      },
+      "id": 19,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^status_text garage$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"garage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"status_text\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Status",
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 7,
+        "x": 4,
+        "y": 14
+      },
+      "id": 20,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^deratingmode_text garage$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"garage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"deratingmode_text\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Derate",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 13,
+        "x": 11,
+        "y": 14
+      },
+      "id": 21,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^faultcode_text garage$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"garage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"faultcode_text\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Fault",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 16
+      },
+      "id": 11,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"garage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"energytoday\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Today",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "outputpower"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Output Power"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "solarpower"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Solar Power"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pv2voltage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PV Voltage"
+              },
+              {
+                "id": "unit",
+                "value": "volt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pv2current"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PV Current"
+              },
+              {
+                "id": "unit",
+                "value": "amp"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "gridfrequency"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Grid Frequency"
+              },
+              {
+                "id": "unit",
+                "value": "rothz"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "gridvoltage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Grid Voltage"
+              },
+              {
+                "id": "unit",
+                "value": "volt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tempinverter"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Inverter Temperature"
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tempipm"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "IPM Temperature"
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pv2power"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PV Power"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 21,
+        "x": 3,
+        "y": 16
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"garage\")\r\n  |> filter(fn: (r) => contains(value: r[\"_field\"], set: [\"pv2current\",\"pv2voltage\",\"solarpower\",\"pv2power\",\"outputpower\",\"gridfrequency\",\"gridvoltage\",\"tempinverter\",\"tempipm\"]))\r\n//  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n//  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Garage Inverter",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 20
+      },
+      "id": 12,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"garage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"energytotal\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Lifetime",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "orange",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 24
+      },
+      "id": 15,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"garage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"totalworktime\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Worktime",
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 23,
+      "panels": [],
+      "title": "Small Inverter (1kW)",
+      "type": "row"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "purple",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 0,
+        "y": 29
+      },
+      "id": 24,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^status_text small$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"small\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"status_text\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Status",
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "purple",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 7,
+        "x": 4,
+        "y": 29
+      },
+      "id": 25,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^deratingmode_text small$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"small\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"deratingmode_text\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Derate",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "purple",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 13,
+        "x": 11,
+        "y": 29
+      },
+      "id": 26,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^faultcode_text small$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"small\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"faultcode_text\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Fault",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "purple",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 31
+      },
+      "id": 27,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"small\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"energytoday\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Today",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "outputpower"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Output Power"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "solarpower"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Solar Power"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pv2voltage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PV Voltage"
+              },
+              {
+                "id": "unit",
+                "value": "volt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pv2current"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PV Current"
+              },
+              {
+                "id": "unit",
+                "value": "amp"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "gridfrequency"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Grid Frequency"
+              },
+              {
+                "id": "unit",
+                "value": "rothz"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "gridvoltage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Grid Voltage"
+              },
+              {
+                "id": "unit",
+                "value": "volt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tempinverter"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Inverter Temperature"
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tempipm"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "IPM Temperature"
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pv2power"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PV Power"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 21,
+        "x": 3,
+        "y": 31
+      },
+      "id": 30,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"small\")\r\n  |> filter(fn: (r) => contains(value: r[\"_field\"], set: [\"pv2current\",\"pv2voltage\",\"solarpower\",\"pv2power\",\"outputpower\",\"gridfrequency\",\"gridvoltage\",\"tempinverter\",\"tempipm\"]))\r\n//  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n//  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Small Inverter",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "purple",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 35
+      },
+      "id": 28,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"small\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"energytotal\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Lifetime",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "purple",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 39
+      },
+      "id": 29,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"small\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"totalworktime\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Worktime",
+      "type": "stat"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 43
+      },
+      "id": 32,
+      "panels": [],
+      "title": "Old Inverter (3kW)",
+      "type": "row"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 4,
+        "x": 0,
+        "y": 44
+      },
+      "id": 33,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^status_text old$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"old\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"status_text\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Status",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 2,
+        "w": 13,
+        "x": 4,
+        "y": 44
+      },
+      "id": 34,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "/^faultcode_text old$/",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"old\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"faultcode_text\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Fault",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 46
+      },
+      "id": 35,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"old\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"energytoday\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Today",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "outputpower"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Output Power"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "solarpower"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Solar Power"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pv2voltage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PV Voltage"
+              },
+              {
+                "id": "unit",
+                "value": "volt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pv2current"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PV Current"
+              },
+              {
+                "id": "unit",
+                "value": "amp"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "gridfrequency"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Grid Frequency"
+              },
+              {
+                "id": "unit",
+                "value": "rothz"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "gridvoltage"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Grid Voltage"
+              },
+              {
+                "id": "unit",
+                "value": "volt"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "tempinverter"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Inverter Temperature"
+              },
+              {
+                "id": "unit",
+                "value": "celsius"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "pv2power"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "PV Power"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 21,
+        "x": 3,
+        "y": 46
+      },
+      "id": 39,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"old\")\r\n  |> filter(fn: (r) => contains(value: r[\"_field\"], set: [\"pv2current\",\"pv2voltage\",\"solarpower\",\"pv2power\",\"outputpower\",\"gridfrequency\",\"gridvoltage\",\"tempinverter\"]))\r\n//  |> aggregateWindow(every: v.windowPeriod, fn: mean, createEmpty: false)\r\n//  |> yield(name: \"mean\")",
+          "refId": "A"
+        }
+      ],
+      "title": "Old Inverter",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "kwatth"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 50
+      },
+      "id": 36,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"old\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"energytotal\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Lifetime",
+      "type": "stat"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "blue",
+            "mode": "fixed"
+          },
+          "decimals": 2,
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 3,
+        "x": 0,
+        "y": 54
+      },
+      "id": 37,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "textMode": "auto"
+      },
+      "pluginVersion": "8.3.2",
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"old\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"totalworktime\")\r\n  |> last()",
+          "refId": "A"
+        }
+      ],
+      "title": "Worktime",
+      "type": "stat"
+    },
+    {
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "_value"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Combined Generation"
+              },
+              {
+                "id": "unit",
+                "value": "watt"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 58
+      },
+      "id": 41,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "garagedata = from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"garage\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"outputpower\")\r\n  |> aggregateWindow(every: 5m, fn: mean, createEmpty: false)\r\n\r\n\r\nsmalldata = from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"small\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"outputpower\")\r\n  |> aggregateWindow(every: 5m, fn: mean, createEmpty: false)\r\n\r\nolddata = from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"solar\")\r\n  |> filter(fn: (r) => r[\"inverter\"] == \"old\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"outputpower\")\r\n  |> aggregateWindow(every: 5m, fn: mean, createEmpty: false)\r\n\r\nunion(tables: [garagedata,smalldata,olddata])\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> group(columns: [\"_time\", \"_measurement\"])\r\n  |> pivot(rowKey:[\"_time\"], columnKey: [\"inverter\"], valueColumn: \"outputpower\")\r\n  |> group()\r\n  |> map(fn: (r) => ({r with garage: if exists r.garage then r.garage else 0.0})) \r\n  |> map(fn: (r) => ({r with small: if exists r.small then r.small else 0.0}))  \r\n  |> map(fn: (r) => ({r with old: if exists r.old then r.old else 0.0}))   \r\n  |> map(fn: (r) => ({r with _value: r.garage+r.old+r.small}))\r\n  |> drop(columns: [\"garage\",\"old\",\"small\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "Total Generation",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "line+area"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "house_phase0"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase A"
+              },
+              {
+                "id": "unit",
+                "value": "Wm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "house_phase1"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase B"
+              },
+              {
+                "id": "unit",
+                "value": "Wm"
+              }
+            ]
+          },
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "house_phase2"
+            },
+            "properties": [
+              {
+                "id": "displayName",
+                "value": "Phase C"
+              },
+              {
+                "id": "unit",
+                "value": "Wm"
+              }
+            ]
+          }
+        ]
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 70
+      },
+      "id": 43,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "influxdb",
+            "uid": "JobrKTh7z"
+          },
+          "query": "from(bucket: \"nodered\")\r\n  |> range(start: v.timeRangeStart, stop: v.timeRangeStop)\r\n  |> filter(fn: (r) => r[\"_measurement\"] == \"sensors\")\r\n  |> filter(fn: (r) => r[\"device\"] == \"house_phase0\" or r[\"device\"] == \"house_phase1\" or r[\"device\"] == \"house_phase2\")\r\n  |> filter(fn: (r) => r[\"_field\"] == \"energy\" or r[\"_field\"] == \"returned_energy\")\r\n  |> pivot(rowKey: [\"_time\"], columnKey: [\"_field\"], valueColumn: \"_value\")\r\n  |> map(fn: (r) => ({r with _value: r.energy-r.returned_energy}))\r\n  |> drop(columns: [\"_start\", \"_stop\",\"energy\",\"returned_energy\"])",
+          "refId": "A"
+        }
+      ],
+      "title": "House Power Consumption",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 33,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Solar Panels",
+  "uid": "OE8ldbA7z",
+  "version": 29,
+  "weekStart": ""
+}
