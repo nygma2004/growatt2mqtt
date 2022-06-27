@@ -71,3 +71,12 @@ And my final review of this project
 Saving data to Influx DB and generating the dashboard in Grafana
 
 [![Reporting dashbpard](https://img.youtube.com/vi/SZr8mhj-O7w/0.jpg)](https://www.youtube.com/watch?v=SZr8mhj-O7w)
+
+## Integration
+
+I added all my integration work in the integration folder and it is also explained in detail in a series of videos:
+- How I read the data in Node-Red and store the values in Inflix DB database
+- Generate Telegram alerts when the inverter has error of faults
+- Send Telegram alert when the inverter is offline
+- Show generation of inverter data in Grafana dashboard
+- Calculate electricity balance: how much extra I generate from solar
