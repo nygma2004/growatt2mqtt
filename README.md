@@ -43,6 +43,7 @@ topicroot/settings | publish || send settings from growatt
 topicroot/write/getSettings | subscribe |ON | initializes the resending of the settings
 topicroot/write/setEnable | subscribe | ON/OFF | enable/disable the output of the growatt
 topicroot/write/setMaxOutputActive | subscribe | 0-100 | set the output level of the growatt in percent 
+topicroot/write/setStartVoltage | subscribe || set the minimum voltage oft the MPPT tracker 
 
 
 ## PCB
@@ -56,7 +57,7 @@ These are the components you need to build this. I purchased most of them a long
 - RS485 to TTL converter: https://www.aliexpress.com/item/1005001621798947.html
 
 With these two components you can power the board using the micro USB on the Wemos D1 mini. My PCB includes components for mains supply:
-- Hi-Link 5V power supply (https://www.aliexpress.com/item/1005001484531375.html)
+- Hi-Link 5V power supply (https://www.aliexpress.com/item/1005001484531375.html) the power can be also delivered by the USB connection of the Growatt
 - Fuseholder and 1A fuse
 - Optional varistor
 - 5.08mm pitch KF301-2P screw terminal block

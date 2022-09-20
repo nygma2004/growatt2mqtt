@@ -283,6 +283,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   // Convert the incoming byte array to a string
 
   int i = 0;
+  uint8_t result;
   for (i = 0; i < length; i++) {        // each char to upper
     payload[i] = toupper(payload[i]);
   }
@@ -323,11 +324,29 @@ void callback(char* topic, byte* payload, unsigned int length) {
     char json[50];
     char topic[80];
 
-    growattInterface.writeRegister8Bit(growattInterface.regMaxOutputActive, message.toInt());
-    delay(5);
-    sprintf(json, "{ \"maxoutputactivepp\":%d}", growattInterface.readRegister8Bit(growattInterface.regMaxOutputActive));
-    sprintf(topic, "%s/settings", topicRoot);
+    result = growattInterface.writeRegister8Bit(growattInterface.regMaxOutputActive, message.toInt());
+    if (result == growattInterface.Success){
+      holdingregisters = false;
+    }else{
+      sprintf(json, "last trasmition has faild with: %s", growattInterface.sendModbusError(result).c_str());
+      sprintf(topic, "%s/error", topicRoot);
     mqtt.publish(topic, json);
+    }  
+  }
+  
+  sprintf(expectedTopic, "%s/write/setStartVoltage", topicRoot);
+  if (strcmp(expectedTopic, topic) == 0) {
+    char json[50];
+    char topic[80];
+ 
+    result = growattInterface.writeRegister8Bit(growattInterface.regStartVoltage, (message.toInt()*10));  //*10 transmit with one digit after decimal place 
+    if (result == growattInterface.Success){
+      holdingregisters = false;
+    }else{
+      sprintf(json, "last trasmition has faild with: %s", growattInterface.sendModbusError(result).c_str());
+      sprintf(topic, "%s/error", topicRoot);
+      mqtt.publish(topic, json);
+    }
   }
 
 #ifdef DEBUG_SERIAL

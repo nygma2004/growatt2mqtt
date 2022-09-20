@@ -29,8 +29,8 @@ void growattIF::initGrowatt() {
   });
 }
 
-void growattIF::writeRegister8Bit(int reg, int message) {
-  growattInterface.writeSingleRegister(reg, message);
+uint8_t growattIF::writeRegister8Bit(int reg, int message) {
+  return growattInterface.writeSingleRegister(reg, message);
 }
 
 uint8_t growattIF::readRegister8Bit(int reg){
