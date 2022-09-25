@@ -305,15 +305,15 @@ void callback(char* topic, byte* payload, unsigned int length) {
     char topic[80];
     
     if (strcmp((char *)payload, "ON") == 0) {
-      growattInterface.writeRegister8Bit(growattInterface.regOnOff, 1);
+      growattInterface.writeRegister(growattInterface.regOnOff, 1);
       delay(5);
-      sprintf(json, "{ \"enable\":%d}", growattInterface.readRegister8Bit(growattInterface.regOnOff));
+      sprintf(json, "{ \"enable\":%d}", growattInterface.readRegister(growattInterface.regOnOff));
       sprintf(topic, "%s/settings", topicRoot);
       mqtt.publish(topic, json);
     } else if (strcmp((char *)payload, "OFF") == 0) {
-      growattInterface.writeRegister8Bit(growattInterface.regOnOff, 0);
+      growattInterface.writeRegister(growattInterface.regOnOff, 0);
       delay(5);
-      sprintf(json, "{ \"enable\":%d}", growattInterface.readRegister8Bit(growattInterface.regOnOff));
+      sprintf(json, "{ \"enable\":%d}", growattInterface.readRegister(growattInterface.regOnOff));
       sprintf(topic, "%s/settings", topicRoot);
       mqtt.publish(topic, json);
     }
@@ -324,7 +324,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     char json[50];
     char topic[80];
 
-    result = growattInterface.writeRegister8Bit(growattInterface.regMaxOutputActive, message.toInt());
+    result = growattInterface.writeRegister(growattInterface.regMaxOutputActive, message.toInt());
     if (result == growattInterface.Success){
       holdingregisters = false;
     }else{
@@ -339,7 +339,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
     char json[50];
     char topic[80];
  
-    result = growattInterface.writeRegister8Bit(growattInterface.regStartVoltage, (message.toInt()*10));  //*10 transmit with one digit after decimal place 
+    result = growattInterface.writeRegister(growattInterface.regStartVoltage, (message.toInt()*10));  //*10 transmit with one digit after decimal place 
     if (result == growattInterface.Success){
       holdingregisters = false;
     }else{

@@ -54,7 +54,7 @@ I designed a custom PCB for this board (for a previous project), you can order i
 
 These are the components you need to build this. I purchased most of them a long time ago. I don't have the original listing, so I included a similar Aliexpress listing.
 - Wemos D1 mini
-- RS485 to TTL converter: https://www.aliexpress.com/item/1005001621798947.html
+- RS485 to TTL converter: https://www.aliexpress.com/item/1005001621798947.html (also works with 3.3V)
 
 With these two components you can power the board using the micro USB on the Wemos D1 mini. My PCB includes components for mains supply:
 - Hi-Link 5V power supply (https://www.aliexpress.com/item/1005001484531375.html) the power can be also delivered by the USB connection of the Growatt

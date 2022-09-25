@@ -29,13 +29,13 @@ void growattIF::initGrowatt() {
   });
 }
 
-uint8_t growattIF::writeRegister8Bit(int reg, int message) {
+uint8_t growattIF::writeRegister(uint16_t reg, uint16_t message) {
   return growattInterface.writeSingleRegister(reg, message);
 }
 
-uint8_t growattIF::readRegister8Bit(int reg){
+uint16_t growattIF::readRegister(uint16_t reg){
   growattInterface.readHoldingRegisters(reg, 1);
-  return growattInterface.getResponseBuffer(0);
+  return growattInterface.getResponseBuffer(0);				// returns 16bit
 }
 
 void growattIF::preTransmission() {

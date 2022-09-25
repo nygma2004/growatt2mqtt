@@ -44,8 +44,8 @@ class growattIF {
   public:
     growattIF(int _PinMAX485_RE_NEG, int _PinMAX485_DE, int _PinMAX485_RX, int _PinMAX485_TX);
     void initGrowatt();
-    uint8_t writeRegister8Bit(int reg, int message);
-    uint8_t readRegister8Bit(int reg);
+    uint8_t writeRegister(uint16_t reg, uint16_t message);
+    uint16_t readRegister(uint16_t reg);
     uint8_t ReadInputRegisters(char* json);
     uint8_t ReadHoldingRegisters(char* json);
     String sendModbusError(uint8_t result);
