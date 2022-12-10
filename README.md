@@ -1,10 +1,10 @@
 # Growatt Solar Inverter Modbus Data to MQTT Gateway
-This sketch runs on an ESP8266 and reads data from Growatt Solar Inverter over RS485 Modbus and publishes the data over MQTT. This code can be modified for any Gorwatt inverters, it has been tested on 1 phase, 2 string inverter version such as my MIN 3000 TL-XE, MIC 1500 TL-X. You find attached to this repo the documentation I used to get data out of the inverter.
+This sketch runs on an ESP8266 and reads data from Growatt Solar Inverter over RS485 Modbus and publishes the data over MQTT. This code can be modified for any Gorwatt inverters, it has been tested on 1 phase, 2 string inverter version such as my MIN 3000 TL-XE, MIC 1500 TL-X, MIC 600 TL-X. You find attached to this repo the documentation I used to get data out of the inverter.
 
 ![Setup](/img/setup.jpg)
 
 This sketch publishes the following information from the holding registers that store device configuration data. More on these please refer to the modbus PDF documentation. This is sent once at startup:
-SaftyFuncEn, Inverter Max output active power percent, Inverter max output reactive power percent, Normal work PV voltage, Firmware version, Control Firmware version, Serial number, Grid voltage low and high limit protect, Grid frequency low and high limit protect
+Enable state, SaftyFuncEn, Inverter Max output active power percent, Inverter max output reactive power percent, Normal work PV voltage, Firmware version, Control Firmware version, Serial number, Grid voltage low and high limit protect, Grid frequency low and high limit protect
 
 The sketch also publishes the live statistics every 4 seconds. These are stored in the input registers:
 Inverter run state, Input power, PV1 and PV2 voltage current and power, Output power, Grid frequency, Energy generated today and total and these for both PV1 and PV2, 3 temperatures, Inverter output PF now, Derating mode, Fault and warning codes.
@@ -29,6 +29,23 @@ The following libraries are used beside the "Standard" ESP8266 libraries:
 - ArduinoOTA
 - SoftwareSerial
 
+
+## Topic
+the topicroot can be changed in the settings.h file (default is growatt).
+
+topic | direction | value | function
+---|----|----|--
+topicroot/status | publish | | send status of the ESP8266
+topicroot/data   | publish | | send power state of the growatt
+topicroot/error  | publish | | send error state 
+topicroot/connection |publish || send connection state of the ESP8266 uses the last will of the broker
+topicroot/settings | publish || send settings from growatt
+topicroot/write/getSettings | subscribe |ON | initializes the resending of the settings
+topicroot/write/setEnable | subscribe | ON/OFF | enable/disable the output of the growatt
+topicroot/write/setMaxOutputActive | subscribe | 0-100 | set the output level of the growatt in percent 
+topicroot/write/setStartVoltage | subscribe || set the minimum voltage oft the MPPT tracker 
+
+
 ## PCB
 
 ![Board](/img/board.jpg)
@@ -37,10 +54,10 @@ I designed a custom PCB for this board (for a previous project), you can order i
 
 These are the components you need to build this. I purchased most of them a long time ago. I don't have the original listing, so I included a similar Aliexpress listing.
 - Wemos D1 mini
-- RS485 to TTL converter: https://www.aliexpress.com/item/1005001621798947.html
+- RS485 to TTL converter: https://www.aliexpress.com/item/1005001621798947.html (also works with 3.3V)
 
 With these two components you can power the board using the micro USB on the Wemos D1 mini. My PCB includes components for mains supply:
-- Hi-Link 5V power supply (https://www.aliexpress.com/item/1005001484531375.html)
+- Hi-Link 5V power supply (https://www.aliexpress.com/item/1005001484531375.html) the power can be also delivered by the USB connection of the Growatt
 - Fuseholder and 1A fuse
 - Optional varistor
 - 5.08mm pitch KF301-2P screw terminal block
@@ -64,28 +81,4 @@ I have a few videos covering the development of this project:
 
 [![Code almost complete](https://img.youtube.com/vi/krCdt2nv3BM/0.jpg)](https://www.youtube.com/watch?v=krCdt2nv3BM)
 
-And my final review of this project
 
-[![Final solution](https://img.youtube.com/vi/Mz1dJGthIJk/0.jpg)](https://www.youtube.com/watch?v=Mz1dJGthIJk)
-
-Saving data to Influx DB and generating the dashboard in Grafana
-
-[![Reporting dashbpard](https://img.youtube.com/vi/SZr8mhj-O7w/0.jpg)](https://www.youtube.com/watch?v=SZr8mhj-O7w)
-
-## Integration
-
-I added all my integration work in the integration folder and it is also explained in detail in a series of videos:
-- How I read the data in Node-Red and store the values in Inflix DB database
-- Generate Telegram alerts when the inverter has error of faults
-- Send Telegram alert when the inverter is offline
-- Show generation of inverter data in Grafana dashboard
-- Calculate electricity balance: how much extra I generate from solar
-
-## Version History
-
-v1.2
-- OTA issue fixed
-- OTA password added
-
-v1.3
-- Derate is address 104 and was incorrectly coded as 103 in line 174
