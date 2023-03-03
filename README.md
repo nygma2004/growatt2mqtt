@@ -42,7 +42,7 @@ topicroot/connection |publish || send connection state of the ESP8266 uses the l
 topicroot/settings | publish || send settings from growatt
 topicroot/write/getSettings | subscribe |ON | initializes the resending of the settings
 topicroot/write/setEnable | subscribe | ON/OFF | enable/disable the output of the growatt
-topicroot/write/setMaxOutputActive | subscribe | 0-100 | set the output level of the growatt in percent 
+topicroot/write/setMaxOutput | subscribe | 0-100 | set the output level of the growatt in percent 
 topicroot/write/setStartVoltage | subscribe || set the minimum voltage oft the MPPT tracker 
 
 
