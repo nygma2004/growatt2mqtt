@@ -58,6 +58,7 @@ class growattIF {
     static const uint8_t regOnOff           = 0;
     static const uint8_t regMaxOutputActive = 3;
     static const uint8_t regStartVoltage    = 17;
+    static const uint8_t regModulPower      = 121;
 };
 
 #endif
