@@ -7,9 +7,9 @@
 
 
 class growattIF {
-  #define SLAVE_ID        1         // Default slave ID of Growatt
-  #define MODBUS_RATE     9600      // Modbus speed of Growatt, do not change
-  
+#define SLAVE_ID        1         // Default slave ID of Growatt
+#define MODBUS_RATE     9600      // Modbus speed of Growatt, do not change
+
   private:
     ModbusMaster growattInterface;
     SoftwareSerial *serial;
@@ -34,7 +34,7 @@ class growattIF {
 
     struct modbus_holding_registers
     {
-      int enable, safetyfuncen, maxoutputactivepp, maxoutputreactivepp;
+      int enable, safetyfuncen, maxoutputactivepp, maxoutputreactivepp, modul;
       float  maxpower, voltnormal, startvoltage, gridvoltlowlimit, gridvolthighlimit, gridfreqlowlimit, gridfreqhighlimit, gridvoltlowconnlimit, gridvolthighconnlimit, gridfreqlowconnlimit, gridfreqhighconnlimit;
       char firmware[6], controlfirmware[6];
       char serial[10];
@@ -53,11 +53,12 @@ class growattIF {
     // Error codes
     static const uint8_t Success    = 0x00;
     static const uint8_t Continue   = 0xFF;
-    
+
     // Growatt Holding registers
     static const uint8_t regOnOff           = 0;
     static const uint8_t regMaxOutputActive = 3;
     static const uint8_t regStartVoltage    = 17;
+    static const uint8_t regModulPower      = 121;
 };
 
 #endif

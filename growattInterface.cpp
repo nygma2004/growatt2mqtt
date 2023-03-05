@@ -5,12 +5,12 @@ growattIF::growattIF(int _PinMAX485_RE_NEG, int _PinMAX485_DE, int _PinMAX485_RX
   PinMAX485_DE = _PinMAX485_DE;
   PinMAX485_RX = _PinMAX485_RX;
   PinMAX485_TX = _PinMAX485_TX;
-  
+
   // Init outputs, RS485 in receive mode
-   pinMode(PinMAX485_RE_NEG, OUTPUT);
-   pinMode(PinMAX485_DE, OUTPUT);
-   digitalWrite(PinMAX485_RE_NEG, 0);
-   digitalWrite(PinMAX485_DE, 0);
+  pinMode(PinMAX485_RE_NEG, OUTPUT);
+  pinMode(PinMAX485_DE, OUTPUT);
+  digitalWrite(PinMAX485_RE_NEG, 0);
+  digitalWrite(PinMAX485_DE, 0);
 }
 
 void growattIF::initGrowatt() {
@@ -33,7 +33,7 @@ uint8_t growattIF::writeRegister(uint16_t reg, uint16_t message) {
   return growattInterface.writeSingleRegister(reg, message);
 }
 
-uint16_t growattIF::readRegister(uint16_t reg){
+uint16_t growattIF::readRegister(uint16_t reg) {
   growattInterface.readHoldingRegisters(reg, 1);
   return growattInterface.getResponseBuffer(0);				// returns 16bit
 }
@@ -56,7 +56,7 @@ uint8_t growattIF::ReadInputRegisters(char* json) {
   ESP.wdtEnable(1);
 
   if (result == growattInterface.ku8MBSuccess)   {
-    if (setcounter == 0) {
+    if (setcounter == 0) {    //register 0-63
       // Status and PV data
       modbusdata.status = growattInterface.getResponseBuffer(0);
       modbusdata.solarpower = ((growattInterface.getResponseBuffer(1) << 16) | growattInterface.getResponseBuffer(2)) * 0.1;
@@ -82,9 +82,11 @@ uint8_t growattIF::ReadInputRegisters(char* json) {
       modbusdata.pv1energytoday = ((growattInterface.getResponseBuffer(59) << 16) | growattInterface.getResponseBuffer(60)) * 0.1;
       modbusdata.pv1energytotal = ((growattInterface.getResponseBuffer(61) << 16) | growattInterface.getResponseBuffer(62)) * 0.1;
       overflow = growattInterface.getResponseBuffer(63);
+      setcounter ++;
+      return Continue;
     }
 
-    if (setcounter == 1) {
+    if (setcounter == 1) {    //register 64 -127
       modbusdata.pv2energytoday = ((overflow << 16) | growattInterface.getResponseBuffer(64 - 64)) * 0.1;
       modbusdata.pv2energytotal = ((growattInterface.getResponseBuffer(65 - 64) << 16) | growattInterface.getResponseBuffer(66 - 64)) * 0.1;
 
@@ -174,62 +176,56 @@ uint8_t growattIF::ReadInputRegisters(char* json) {
       //  0x2000 \
       //  0x4000 \
       //  0x8000
-    }
-
-    setcounter++;
-    if (setcounter == 2) {
       setcounter = 0;
-
-      // Generate the modbus MQTT message
-      sprintf(json, "{", json);
-      sprintf(json, "%s \"status\":%d,", json, modbusdata.status);
-      sprintf(json, "%s \"solarpower\":%.1f,", json, modbusdata.solarpower);
-      sprintf(json, "%s \"pv1voltage\":%.1f,", json, modbusdata.pv1voltage);
-      sprintf(json, "%s \"pv1current\":%.1f,", json, modbusdata.pv1current);
-      sprintf(json, "%s \"pv1power\":%.1f,", json, modbusdata.pv1power);
-      sprintf(json, "%s \"pv2voltage\":%.1f,", json, modbusdata.pv2voltage);
-      sprintf(json, "%s \"pv2current\":%.1f,", json, modbusdata.pv2current);
-      sprintf(json, "%s \"pv2power\":%.1f,", json, modbusdata.pv2power);
-
-      sprintf(json, "%s \"outputpower\":%.1f,", json, modbusdata.outputpower);
-      sprintf(json, "%s \"gridfrequency\":%.2f,", json, modbusdata.gridfrequency);
-      sprintf(json, "%s \"gridvoltage\":%.1f,", json, modbusdata.gridvoltage);
-
-      sprintf(json, "%s \"energytoday\":%.1f,", json, modbusdata.energytoday);
-      sprintf(json, "%s \"energytotal\":%.1f,", json, modbusdata.energytotal);
-      sprintf(json, "%s \"totalworktime\":%.1f,", json, modbusdata.totalworktime);
-      sprintf(json, "%s \"pv1energytoday\":%.1f,", json, modbusdata.pv1energytoday);
-      sprintf(json, "%s \"pv1energytotal\":%.1f,", json, modbusdata.pv1energytotal);
-      sprintf(json, "%s \"pv2energytoday\":%.1f,", json, modbusdata.pv2energytoday);
-      sprintf(json, "%s \"pv2energytotal\":%.1f,", json, modbusdata.pv2energytotal);
-      sprintf(json, "%s \"opfullpower\":%.1f,", json, modbusdata.opfullpower);
-
-      sprintf(json, "%s \"tempinverter\":%.1f,", json, modbusdata.tempinverter);
-      sprintf(json, "%s \"tempipm\":%.1f,", json, modbusdata.tempipm);
-      sprintf(json, "%s \"tempboost\":%.1f,", json, modbusdata.tempboost);
-
-      sprintf(json, "%s \"ipf\":%d,", json, modbusdata.ipf);
-      sprintf(json, "%s \"realoppercent\":%d,", json, modbusdata.realoppercent);
-      sprintf(json, "%s \"deratingmode\":%d,", json, modbusdata.deratingmode);
-      sprintf(json, "%s \"faultcode\":%d,", json, modbusdata.faultcode);
-      sprintf(json, "%s \"faultbitcode\":%d,", json, modbusdata.faultbitcode);
-      sprintf(json, "%s \"warningbitcode\":%d }", json, modbusdata.warningbitcode);
-      return result;
     }
-    return Continue;
   } else {
     return result;
   }
+  // Generate the modbus MQTT message
+  sprintf(json, "{", json);
+  sprintf(json, "%s \"status\":%d,", json, modbusdata.status);
+  sprintf(json, "%s \"solarpower\":%.1f,", json, modbusdata.solarpower);
+  sprintf(json, "%s \"pv1voltage\":%.1f,", json, modbusdata.pv1voltage);
+  sprintf(json, "%s \"pv1current\":%.1f,", json, modbusdata.pv1current);
+  sprintf(json, "%s \"pv1power\":%.1f,", json, modbusdata.pv1power);
+  sprintf(json, "%s \"pv2voltage\":%.1f,", json, modbusdata.pv2voltage);
+  sprintf(json, "%s \"pv2current\":%.1f,", json, modbusdata.pv2current);
+  sprintf(json, "%s \"pv2power\":%.1f,", json, modbusdata.pv2power);
+
+  sprintf(json, "%s \"outputpower\":%.1f,", json, modbusdata.outputpower);
+  sprintf(json, "%s \"gridfrequency\":%.2f,", json, modbusdata.gridfrequency);
+  sprintf(json, "%s \"gridvoltage\":%.1f,", json, modbusdata.gridvoltage);
+
+  sprintf(json, "%s \"energytoday\":%.1f,", json, modbusdata.energytoday);
+  sprintf(json, "%s \"energytotal\":%.1f,", json, modbusdata.energytotal);
+  sprintf(json, "%s \"totalworktime\":%.1f,", json, modbusdata.totalworktime);
+  sprintf(json, "%s \"pv1energytoday\":%.1f,", json, modbusdata.pv1energytoday);
+  sprintf(json, "%s \"pv1energytotal\":%.1f,", json, modbusdata.pv1energytotal);
+  sprintf(json, "%s \"pv2energytoday\":%.1f,", json, modbusdata.pv2energytoday);
+  sprintf(json, "%s \"pv2energytotal\":%.1f,", json, modbusdata.pv2energytotal);
+  sprintf(json, "%s \"opfullpower\":%.1f,", json, modbusdata.opfullpower);
+
+  sprintf(json, "%s \"tempinverter\":%.1f,", json, modbusdata.tempinverter);
+  sprintf(json, "%s \"tempipm\":%.1f,", json, modbusdata.tempipm);
+  sprintf(json, "%s \"tempboost\":%.1f,", json, modbusdata.tempboost);
+
+  sprintf(json, "%s \"ipf\":%d,", json, modbusdata.ipf);
+  sprintf(json, "%s \"realoppercent\":%d,", json, modbusdata.realoppercent);
+  sprintf(json, "%s \"deratingmode\":%d,", json, modbusdata.deratingmode);
+  sprintf(json, "%s \"faultcode\":%d,", json, modbusdata.faultcode);
+  sprintf(json, "%s \"faultbitcode\":%d,", json, modbusdata.faultbitcode);
+  sprintf(json, "%s \"warningbitcode\":%d }", json, modbusdata.warningbitcode);
+  return result;
 }
+
 uint8_t growattIF::ReadHoldingRegisters(char* json) {
   uint8_t result;
-
   ESP.wdtDisable();
   result = growattInterface.readHoldingRegisters(setcounter * 64, 64);
   ESP.wdtEnable(1);
 
   if (result == growattInterface.ku8MBSuccess)   {
-    if (setcounter == 0) {
+    if (setcounter == 0) {      //register 0-63
       modbussettings.enable = growattInterface.getResponseBuffer(0);
       modbussettings.safetyfuncen = growattInterface.getResponseBuffer(1); // Safety Function Enabled
       //  Bit0: SPI enable
@@ -281,45 +277,50 @@ uint8_t growattIF::ReadHoldingRegisters(char* json) {
       modbussettings.gridvolthighlimit = growattInterface.getResponseBuffer(53) * 0.1;
       modbussettings.gridfreqlowlimit = growattInterface.getResponseBuffer(54) * 0.01;
       modbussettings.gridfreqhighlimit = growattInterface.getResponseBuffer(55) * 0.01;
+      setcounter ++;
+      return Continue;
     }
-    if (setcounter == 1) {
+    if (setcounter == 1) {      //register 64 -127
       modbussettings.gridvoltlowconnlimit = growattInterface.getResponseBuffer(64 - 64) * 0.1;
       modbussettings.gridvolthighconnlimit = growattInterface.getResponseBuffer(65 - 64) * 0.1;
       modbussettings.gridfreqlowconnlimit = growattInterface.getResponseBuffer(66 - 64) * 0.01;
       modbussettings.gridfreqhighconnlimit = growattInterface.getResponseBuffer(67 - 64) * 0.01;
-    }
 
-    setcounter++;
-    if (setcounter == 2) {
+      modbussettings.modul = growattInterface.getResponseBuffer(121 - 64);
+      setcounter ++;
+      return Continue;
+    }
+    if (setcounter == 2) {      //register 128-191
+      //          //          modbussettings.modul = growattInterface.getResponseBuffer(130 - 128);
       setcounter = 0;
-      // Generate the modbus MQTT message
-      sprintf(json, "{", json);
-      sprintf(json, "%s \"enable\":%d,", json, modbussettings.enable);
-      sprintf(json, "%s \"safetyfuncen\":%d,", json, modbussettings.safetyfuncen);
-      sprintf(json, "%s \"maxoutputactivepp\":%d,", json, modbussettings.maxoutputactivepp);
-      sprintf(json, "%s \"maxoutputreactivepp\":%d,", json, modbussettings.maxoutputreactivepp);
-      
-      sprintf(json, "%s \"maxpower\":%.1f,", json, modbussettings.maxpower);
-      sprintf(json, "%s \"voltnormal\":%.1f,", json, modbussettings.voltnormal);
-      sprintf(json, "%s \"startvoltage\":%.1f,", json, modbussettings.startvoltage);
-      sprintf(json, "%s \"gridvoltlowlimit\":%.1f,", json, modbussettings.gridvoltlowlimit);
-      sprintf(json, "%s \"gridvolthighlimit\":%.1f,", json, modbussettings.gridvolthighlimit);
-      sprintf(json, "%s \"gridfreqlowlimit\":%.1f,", json, modbussettings.gridfreqlowlimit);
-      sprintf(json, "%s \"gridfreqhighlimit\":%.1f,", json, modbussettings.gridfreqhighlimit);
-      sprintf(json, "%s \"gridvoltlowconnlimit\":%.1f,", json, modbussettings.gridvoltlowconnlimit);
-      sprintf(json, "%s \"gridvolthighconnlimit\":%.1f,", json, modbussettings.gridvolthighconnlimit);
-      sprintf(json, "%s \"gridfreqlowconnlimit\":%.1f,", json, modbussettings.gridfreqlowconnlimit);
-      sprintf(json, "%s \"gridfreqhighconnlimit\":%.1f,", json, modbussettings.gridfreqhighconnlimit);
-
-      sprintf(json, "%s \"firmware\":\"%s\",", json, modbussettings.firmware);
-      sprintf(json, "%s \"controlfirmware\":\"%s\",", json, modbussettings.controlfirmware);
-      sprintf(json, "%s \"serial\":\"%s\" }", json, modbussettings.serial);
-      return result;
     }
-   return Continue;
   } else {
     return result;
   }
+  // Generate the modbus MQTT message
+  sprintf(json, "{", json);
+  sprintf(json, "%s \"enable\":%d,", json, modbussettings.enable);
+  sprintf(json, "%s \"safetyfuncen\":%d,", json, modbussettings.safetyfuncen);
+  sprintf(json, "%s \"maxoutputactivepp\":%d,", json, modbussettings.maxoutputactivepp);
+  sprintf(json, "%s \"maxoutputreactivepp\":%d,", json, modbussettings.maxoutputreactivepp);
+
+  sprintf(json, "%s \"maxpower\":%.1f,", json, modbussettings.maxpower);
+  sprintf(json, "%s \"voltnormal\":%.1f,", json, modbussettings.voltnormal);
+  sprintf(json, "%s \"startvoltage\":%.1f,", json, modbussettings.startvoltage);
+  sprintf(json, "%s \"gridvoltlowlimit\":%.1f,", json, modbussettings.gridvoltlowlimit);
+  sprintf(json, "%s \"gridvolthighlimit\":%.1f,", json, modbussettings.gridvolthighlimit);
+  sprintf(json, "%s \"gridfreqlowlimit\":%.1f,", json, modbussettings.gridfreqlowlimit);
+  sprintf(json, "%s \"gridfreqhighlimit\":%.1f,", json, modbussettings.gridfreqhighlimit);
+  sprintf(json, "%s \"gridvoltlowconnlimit\":%.1f,", json, modbussettings.gridvoltlowconnlimit);
+  sprintf(json, "%s \"gridvolthighconnlimit\":%.1f,", json, modbussettings.gridvolthighconnlimit);
+  sprintf(json, "%s \"gridfreqlowconnlimit\":%.1f,", json, modbussettings.gridfreqlowconnlimit);
+  sprintf(json, "%s \"gridfreqhighconnlimit\":%.1f,", json, modbussettings.gridfreqhighconnlimit);
+
+  sprintf(json, "%s \"firmware\":\"%s\",", json, modbussettings.firmware);
+  sprintf(json, "%s \"controlfirmware\":\"%s\",", json, modbussettings.controlfirmware);
+  sprintf(json, "%s \"serial\":\"%s\",", json, modbussettings.serial);
+  sprintf(json, "%s \"modulPower\":\"%04X\" }", json, modbussettings.modul);
+  return result;
 }
 
 String growattIF::sendModbusError(uint8_t result) {

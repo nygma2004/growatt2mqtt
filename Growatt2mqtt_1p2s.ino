@@ -303,7 +303,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if (strcmp(expectedTopic, topic) == 0) {
     char json[50];
     char topic[80];
-    
+
     if (strcmp((char *)payload, "ON") == 0) {
       growattInterface.writeRegister(growattInterface.regOnOff, 1);
       delay(5);
@@ -325,29 +325,53 @@ void callback(char* topic, byte* payload, unsigned int length) {
     char topic[80];
 
     result = growattInterface.writeRegister(growattInterface.regMaxOutputActive, message.toInt());
-    if (result == growattInterface.Success){
+    if (result == growattInterface.Success) {
       holdingregisters = false;
-    }else{
-      sprintf(json, "last trasmition has faild with: %s", growattInterface.sendModbusError(result).c_str());
-      sprintf(topic, "%s/error", topicRoot);
-    mqtt.publish(topic, json);
-    }  
-  }
-  
-  sprintf(expectedTopic, "%s/write/setStartVoltage", topicRoot);
-  if (strcmp(expectedTopic, topic) == 0) {
-    char json[50];
-    char topic[80];
- 
-    result = growattInterface.writeRegister(growattInterface.regStartVoltage, (message.toInt()*10));  //*10 transmit with one digit after decimal place 
-    if (result == growattInterface.Success){
-      holdingregisters = false;
-    }else{
+    } else {
       sprintf(json, "last trasmition has faild with: %s", growattInterface.sendModbusError(result).c_str());
       sprintf(topic, "%s/error", topicRoot);
       mqtt.publish(topic, json);
     }
   }
+
+  sprintf(expectedTopic, "%s/write/setStartVoltage", topicRoot);
+  if (strcmp(expectedTopic, topic) == 0) {
+    char json[50];
+    char topic[80];
+
+    result = growattInterface.writeRegister(growattInterface.regStartVoltage, (message.toInt() * 10)); //*10 transmit with one digit after decimal place
+    if (result == growattInterface.Success) {
+      holdingregisters = false;
+    } else {
+      sprintf(json, "last trasmition has faild with: %s", growattInterface.sendModbusError(result).c_str());
+      sprintf(topic, "%s/error", topicRoot);
+      mqtt.publish(topic, json);
+    }
+  }
+
+#ifdef useModulPower
+  sprintf(expectedTopic, "%s/write/setModulPower", topicRoot);
+  if (strcmp(expectedTopic, topic) == 0) {
+    char json[50];
+    char topic[80];
+
+    growattInterface.writeRegister(growattInterface.regOnOff, 0);
+    delay(500);
+
+    result = growattInterface.writeRegister(growattInterface.regModulPower, int(strtol(message.c_str(), NULL, 16)));
+    delay(500);
+    growattInterface.writeRegister(growattInterface.regOnOff, 1);
+    delay(1500);
+
+    if (result == growattInterface.Success) {
+      holdingregisters = false;
+    } else {
+      sprintf(json, "last trasmition has faild with: %s", growattInterface.sendModbusError(result).c_str());
+      sprintf(topic, "%s/error", topicRoot);
+      mqtt.publish(topic, json);
+    }
+  }
+#endif
 
 #ifdef DEBUG_SERIAL
   Serial.print(F("Message arrived on topic: ["));

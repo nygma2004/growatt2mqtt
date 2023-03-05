@@ -42,9 +42,27 @@ topicroot/connection |publish || send connection state of the ESP8266 uses the l
 topicroot/settings | publish || send settings from growatt
 topicroot/write/getSettings | subscribe |ON | initializes the resending of the settings
 topicroot/write/setEnable | subscribe | ON/OFF | enable/disable the output of the growatt
-topicroot/write/setMaxOutputActive | subscribe | 0-100 | set the output level of the growatt in percent 
+topicroot/write/setMaxOutput | subscribe | 0-100 | set the output level of the growatt in percent 
 topicroot/write/setStartVoltage | subscribe || set the minimum voltage oft the MPPT tracker 
+topicroot/write/setModulPower | subscribe |HEX| change the type of inverter. see chapter **ModulPower command**
 
+## ModulPower command
+Read or change the type of inverter. e.g. MIC 600TL-X to MIC 1000TL-X.
+
+Make sure that the data sheets of the two devices match, then it is probably the same hardware.
+Value| Powerstage
+---|---
+06 | 600W
+07 | 750W
+0A | 1000W
+0F | 1500W
+14 | 2000W
+19 | 2500W
+1E | 3000W
+
+**Danger!** Can lead to the destruction of the inverter.
+
+In order to be able to execute SetModulPower, must be add **#define useModulPower   1** in settings.h.
 
 ## PCB
 
