@@ -80,6 +80,20 @@ With these two components you can power the board using the micro USB on the Wem
 - Optional varistor
 - 5.08mm pitch KF301-2P screw terminal block
 
+For a different Modbus project, I have designed a slightly different board:
+![Board2](/img/board2.jpg)
+
+The difference of this board:
+- Components for the mains input removed (Hi-Link power supply, fuse, varistor) and it has a +5V input from an external power course, or a footprint for a small DC-DC buck converter if powered from more 9-25V.
+- Added a specific pad for a neopixel modul for visual feedback.
+
+Rest is the same.
+
+- 4 pin DC-DC buck converter power supply module. The module I used looks like is no longer available, but I found a similar module: https://www.aliexpress.com/item/1005003512429148.html. This is configurable for different voltages with solderpads in the back, but the default is 5V.
+- WS2812 Neopixel module: https://www.aliexpress.com/item/33026835790.html. This is optional, the sketch works without the neopixel as well
+
+To make this project work (modbus communnication and the web bits (MQTT, HTTP) you can use both of my version 1 (https://www.pcbway.com/project/shareproject/ESP8266_Modbus_board.html) and version 2 (https://www.pcbway.com/project/shareproject/Modbus_to_MQTT_board_version_2_338ed64e.html) modbus PCB modules as well. I explained the differences between them in the version 2 PCBWay project page and also in the video. Feel free to order and of the modules and the same code will work on both.
+
 And if you want to wire them yourself, these are the connections:
 ```
 Wemod D1 mini (or other ESP)            TTL to RS485
@@ -99,4 +113,4 @@ I have a few videos covering the development of this project:
 
 [![Code almost complete](https://img.youtube.com/vi/krCdt2nv3BM/0.jpg)](https://www.youtube.com/watch?v=krCdt2nv3BM)
 
-
+[![Solar Integration](https://img.youtube.com/vi/SZr8mhj-O7w/0.jpg)](https://www.youtube.com/watch?v=SZr8mhj-O7w)
