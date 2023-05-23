@@ -9,6 +9,11 @@ Enable state, SaftyFuncEn, Inverter Max output active power percent, Inverter ma
 The sketch also publishes the live statistics every 4 seconds. These are stored in the input registers:
 Inverter run state, Input power, PV1 and PV2 voltage current and power, Output power, Grid frequency, Energy generated today and total and these for both PV1 and PV2, 3 temperatures, Inverter output PF now, Derating mode, Fault and warning codes.
 
+## Versions
+My original version was updated by [@joe288](https://github.com/joe288) and the single-ino code was structured into a separte class to make the code more modular and easier to understand. Also check the updated in the topic section for the new Output Level and some other settings can be controlled. Also the inverter can be changed to a higher power inverter than what it was set in the factory. Handle this option with care. More about this in the relevant section below.
+
+Also thanks to [@Performance20](https://github.com/Performance20) there is now a PlatformIO version available here: https://github.com/Performance20/growatt2mqtt. This version is slightly different from the original version, more about it in [Issue29](https://github.com/nygma2004/growatt2mqtt/issues/29)
+
 ## Install
 Download this repository and build and flash your ESP. As I said the code works for 1 phase 2 string inverters, if you have a 3 phase inverter, or more strings the code will still work, but you will not see all the data in the device. For BOM and PCB scroll down for the relevant sections below.
 You need an Arduino IDE with ESP8266 configuration added. You need a few additional libraries (see below). And before you build open the settings.h and set your credentials. I think they are self explanatory. Compile and upload.
