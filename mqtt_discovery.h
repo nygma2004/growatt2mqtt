@@ -210,6 +210,12 @@ void publishHADiscovery(PubSubClient &mqtt, const char* baseClientID, const char
   sprintf(payload, "{\"name\":\"%s Version\",\"state_topic\":\"%s/status\",\"availability_topic\":\"%s/connection\",\"unique_id\":\"%s_version\",\"entity_category\":\"diagnostic\",\"value_template\":\"{{ value_json.version }}\",\"device\":{\"identifiers\":[\"%s\"],\"name\":\"%s\",\"model\":\"Growatt Inverter\",\"sw_version\":\"%s\"}}", baseClientID, topicRoot, topicRoot, uniqueClientID, uniqueClientID, baseClientID, buildversion);
   mqtt.publish(discTopic, payload, true);
   delay(50);
+
+  // Max Output Active Power % (from settings)
+  sprintf(discTopic, "homeassistant/sensor/%s_maxoutputactivepp/config", uniqueClientID);
+  sprintf(payload, "{\"name\":\"%s Max Output Active Power %%\",\"state_topic\":\"%s/settings\",\"availability_topic\":\"%s/connection\",\"unique_id\":\"%s_maxoutputactivepp\",\"unit_of_measurement\":\"%%\",\"state_class\":\"measurement\",\"value_template\":\"{{ value_json.maxoutputactivepp }}\",\"device\":{\"identifiers\":[\"%s\"],\"name\":\"%s\",\"model\":\"Growatt Inverter\",\"sw_version\":\"%s\"}}", baseClientID, topicRoot, topicRoot, uniqueClientID, uniqueClientID, baseClientID, buildversion);
+  mqtt.publish(discTopic, payload, true);
+  delay(50);
 }
 
 #endif

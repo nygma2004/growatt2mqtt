@@ -285,8 +285,9 @@ uint8_t growattIF::ReadHoldingRegisters(char* json) {
       modbussettings.gridvolthighconnlimit = growattInterface.getResponseBuffer(65 - 64) * 0.1;
       modbussettings.gridfreqlowconnlimit = growattInterface.getResponseBuffer(66 - 64) * 0.01;
       modbussettings.gridfreqhighconnlimit = growattInterface.getResponseBuffer(67 - 64) * 0.01;
-
+      
       modbussettings.modul = growattInterface.getResponseBuffer(121 - 64);
+      modbussettings.TrakerModel = growattInterface.getResponseBuffer(124 - 64);
       setcounter ++;
       return Continue;
     }
@@ -319,7 +320,9 @@ uint8_t growattIF::ReadHoldingRegisters(char* json) {
   sprintf(json, "%s \"firmware\":\"%s\",", json, modbussettings.firmware);
   sprintf(json, "%s \"controlfirmware\":\"%s\",", json, modbussettings.controlfirmware);
   sprintf(json, "%s \"serial\":\"%s\",", json, modbussettings.serial);
-  sprintf(json, "%s \"modulPower\":\"%04X\" }", json, modbussettings.modul);
+  sprintf(json, "%s \"modulPower\":\"%04X\",", json, modbussettings.modul);
+  sprintf(json, "%s \"TrakerModel\":%d", json, modbussettings.TrakerModel);
+  sprintf(json, "%s }", json);
   return result;
 }
 

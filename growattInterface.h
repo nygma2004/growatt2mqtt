@@ -34,7 +34,7 @@ class growattIF {
 
     struct modbus_holding_registers
     {
-      int enable, safetyfuncen, maxoutputactivepp, maxoutputreactivepp, modul;
+      int enable, safetyfuncen, maxoutputactivepp, maxoutputreactivepp, modul, TrakerModel;
       float  maxpower, voltnormal, startvoltage, gridvoltlowlimit, gridvolthighlimit, gridfreqlowlimit, gridfreqhighlimit, gridvoltlowconnlimit, gridvolthighconnlimit, gridfreqlowconnlimit, gridfreqhighconnlimit;
       char firmware[6], controlfirmware[6];
       char serial[10];
@@ -59,6 +59,7 @@ class growattIF {
     static const uint8_t regMaxOutputActive = 3;
     static const uint8_t regStartVoltage    = 17;
     static const uint8_t regModulPower      = 121;
+    static const uint8_t regTrakerModel     = 124;
 };
 
 #endif

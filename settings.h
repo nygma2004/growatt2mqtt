@@ -1,3 +1,4 @@
+#pragma once
 //#define DEBUG_SERIAL    1
 //#define DEBUG_MQTT      1 
 //#define useModulPower   1
@@ -22,19 +23,25 @@
 
 // Update the below parameters for your project
 // Also check NTP.h for some parameters as well
-const char* ssid = "xxxx";           // Wifi SSID
-const char* password = "xxxx";    // Wifi password
-const char* mqtt_server = "192.168.x.xx";     // MQTT server
-const char* mqtt_user = "xxxx";             // MQTT userid
-const char* mqtt_password = "xxxx";         // MQTT password
-const char* clientID = "growatt";                // MQTT client ID
-const char* topicRoot = "growatt";             // MQTT root topic for the device, keep / at the end
+static const char* ssid = "xxxx";           // Wifi SSID
+static const char* password = "xxxx";    // Wifi password
+static const char* mqtt_server = "192.168.x.xx";     // MQTT server
+static const char* mqtt_user = "xxxx";             // MQTT userid
+static const char* mqtt_password = "xxxx";         // MQTT password
+static const char* clientID = "growatt";                // MQTT client ID
+static const char* topicRoot = "growatt";             // MQTT root topic for the device, keep / at the end
 
 
 // Comment the entire second below for dynamic IP (including the define)
 // #define FIXEDIP   1
-IPAddress local_IP(192, 168, 1, 205);         // Set your Static IP address
-IPAddress gateway(192, 168, 1, 254);          // Set your Gateway IP address
-IPAddress subnet(255, 255, 255, 0);
-IPAddress primaryDNS(192, 168, 1, 254);   //optional
-IPAddress secondaryDNS(8, 8, 4, 4); //optional
+static const IPAddress local_IP(192, 168, 1, 205);         // Set your Static IP address
+static const IPAddress gateway(192, 168, 1, 254);          // Set your Gateway IP address
+static const IPAddress subnet(255, 255, 255, 0);
+static const IPAddress primaryDNS(192, 168, 1, 254);   //optional
+static const IPAddress secondaryDNS(8, 8, 4, 4); //optional
+
+// #define ZeroExport 1
+#define UPDATE_SMETER 5                     //Update smart meter data every 5 seconds
+static const int SmartMeterOffset = 0;            // Watt offset to apply to smart meter reading (to account for baseline consumption, set to 0 if not needed)
+static const char* SmartMeterEndpoint = "http://192.168.X.XXX/cm?cmnd=STATUS%2010";
+static const char* SmartMeterKey = "Power";        // JSON key to read from smart meter response

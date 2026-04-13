@@ -32,8 +32,16 @@ PubSubClient mqtt(mqtt_server, 1883, 0, espClient);
 CRGB leds[NUM_LEDS];
 growattIF growattInterface(MAX485_RE_NEG, MAX485_DE, MAX485_RX, MAX485_TX);
 
+#ifdef ZeroExport
+#include "zeroExport.h"
+zeroExport zeroExportReader(SmartMeterEndpoint, UPDATE_SMETER);
+#endif
+
+char settingsJson[1024];
+char dataJson[1024];
+uint8_t outputPercent = 100;
+
 void ReadInputRegisters() {
-  char json[1024];
   char topic[80];
 
   leds[0] = CRGB::Yellow;
@@ -42,7 +50,7 @@ void ReadInputRegisters() {
 
   digitalWrite(STATUS_LED, 0);
 
-  result = growattInterface.ReadInputRegisters(json);
+  result = growattInterface.ReadInputRegisters(dataJson);
   if (result == growattInterface.Success) {
     leds[0] = CRGB::Green;
     FastLED.show();
@@ -53,7 +61,7 @@ void ReadInputRegisters() {
     Serial.println(result);
 #endif
     sprintf(topic, "%s/data", topicRoot);
-    mqtt.publish(topic, json);
+    mqtt.publish(topic, dataJson);
     Serial.println("Data MQTT sent");
 
   } else if (result != growattInterface.Continue) {
@@ -74,7 +82,6 @@ void ReadInputRegisters() {
 }
 
 void ReadHoldingRegisters() {
-  char json[1024];
   char topic[80];
 
   leds[0] = CRGB::Yellow;
@@ -82,7 +89,7 @@ void ReadHoldingRegisters() {
   uint8_t result;
 
   digitalWrite(STATUS_LED, 0);
-  result = growattInterface.ReadHoldingRegisters(json);
+  result = growattInterface.ReadHoldingRegisters(settingsJson);
   if (result == growattInterface.Success)   {
     leds[0] = CRGB::Green;
     FastLED.show();
@@ -90,10 +97,10 @@ void ReadHoldingRegisters() {
     ledoff = true;
 
 #ifdef DEBUG_SERIAL
-    Serial.println(json);
+    Serial.println(settingsJson);
 #endif
     sprintf(topic, "%s/settings", topicRoot);
-    mqtt.publish(topic, json);
+    mqtt.publish(topic, settingsJson);
     Serial.println("Setting MQTT sent");
     // Set the flag to true not to read the holding registers again
     holdingregisters = true;
@@ -340,6 +347,21 @@ void callback(char* topic, byte* payload, unsigned int length) {
     }
   }
 
+  sprintf(expectedTopic, "%s/write/setTrakerModel", topicRoot);
+  if (strcmp(expectedTopic, topic) == 0) {
+    char json[50];
+    char topic[80];
+
+    result = growattInterface.writeRegister(growattInterface.regTrakerModel, message.toInt());
+    if (result == growattInterface.Success) {
+      holdingregisters = false;
+    } else {
+      sprintf(json, "last trasmition has faild with: %s", growattInterface.sendModbusError(result).c_str());
+      sprintf(topic, "%s/error", topicRoot);
+      mqtt.publish(topic, json);
+    }
+  }
+
   sprintf(expectedTopic, "%s/write/setStartVoltage", topicRoot);
   if (strcmp(expectedTopic, topic) == 0) {
     char json[50];
@@ -391,6 +413,18 @@ void loop() {
   // Handle HTTP server requests
   server.handleClient();
   ArduinoOTA.handle();
+
+  // Handle SmartMeterReader (non-blocking, performs HTTP request if interval elapsed)
+#ifdef ZeroExport
+  uint8_t out;
+  zeroExportReader.handle(dataJson,settingsJson,&out);
+  if(out != outputPercent ){
+    outputPercent = out;
+    uint8_t result = growattInterface.writeRegister(growattInterface.regMaxOutputActive, outputPercent);
+    if (result == growattInterface.Success)
+      holdingregisters = false;
+  }
+#endif
 
   // Handle MQTT connection/reconnection
   if (mqtt_server != "") {
